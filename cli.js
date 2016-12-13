@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require('path')
-const inPath = relatize(process.argv[1])
-const outPath = relatize(process.argv[2])
+const inPath = relatize(process.argv[2])
+const outPath = relatize(process.argv[3])
 
 function relatize(p){
   if(p.substring(0, path.sep.length)!=path.sep){
