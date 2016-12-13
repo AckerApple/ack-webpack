@@ -9,6 +9,7 @@ const config = {
       { test: /\.json$/, loader: "json-loader" },
     ],
     loaders: [
+      { test: /\.(jade|pug)$/, loader: "pug" },
       {
         test: /\.js$/,
         exclude: /node_modules\/localforage/,
