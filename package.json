@@ -4,7 +4,12 @@
   "description": "Includes webpack, babel-loader, json-loader, pug-loader and more",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./cli test/assets/index.js test/assets/index-build.js",
+    "test:watch": "node ./cli test/assets/index.js test/assets/index-build.js --watch",
+    "test:production": "node ./cli test/assets/index.js test/assets/index-build.js --production"
+  },
+  "bin": {
+    "ack-webpack": "./cli.js"
   },
   "repository": {
     "type": "git",
