@@ -1,12 +1,12 @@
 {
   "name": "ack-webpack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Includes webpack, babel-loader, json-loader, pug-loader and more",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "node ./cli test/assets/index.js test/assets/index-build.js",
-    "test:watch": "node ./cli test/assets/index.js test/assets/index-build.js --watch",
-    "test:production": "node ./cli test/assets/index.js test/assets/index-build.js --production"
+    "test": "node ./cli-test test/assets/index.js test/assets/index-build.js",
+    "test:watch": "node ./cli-test test/assets/index.js test/assets/index-build.js --watch",
+    "test:production": "node ./cli-test test/assets/index.js test/assets/index-build.js --production"
   },
   "bin": {
     "ack-webpack": "./cli.js"
