@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 
 const config = {
+  bail:true,
   //entry: './src/ack-angular.js',
   //output: path.join(__dirname,'www','ack-angular.js'),
   module:{

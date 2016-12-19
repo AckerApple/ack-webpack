@@ -6,6 +6,7 @@ Includes webpack, babel-loader, json-loader, pug-loader and more
 - [Overview](#overview)
 - [Package Installation](#package-installation)
 - [CLI Commands](#cli-commands)
+- [Webpack Defaults](webpack-defaults)
 
 ## Overview
 This package intends to greatly reduce common project setup times when using webpack to bundle javascript code.
@@ -43,3 +44,11 @@ Options
 - **production** - output files will be compressed with NO source-maps
 - **minify** - output files will be compressed
 - **watch** - browser is opened and files are watched to cause refresh
+
+- Webpack Defaults
+Know your defaults. The following is automatically happening, some of which can be overridden fairly easily.
+
+- bail=true - Webpack will not build if a compling error occurs
+- [json-loader](https://www.npmjs.com/package/json-loader) is included to read JSON files
+- [babel-loader](https://www.npmjs.com/package/babel-loader) is included to support ECMA6
+- [pug-loader](https://www.npmjs.com/package/pug-loader) is included for advanced Javascript templating
