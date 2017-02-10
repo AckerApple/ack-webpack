@@ -1,7 +1,7 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.0.7] - 2016-02-10
+## [1.0.8] - 2017-02-10
 ### Enhanced
 - more messaging during watching
 

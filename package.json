@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Includes webpack, babel-loader, json-loader, pug-loader and more",
   "main": "webpack.config.js",
   "scripts": {

@@ -22,7 +22,7 @@ module.exports = function(fromPath, outPath){
     }, function(err, stats) {
       if(err)return console.error(err)
       if(watching){
-        console.log('\x1b[36m[ack-webpack]\x1b[0m Rebuilt')
+        console.log('\x1b[36m[ack-webpack]\x1b[0m Rebuilt '+getServerTime())
       }else{
         console.log('\x1b[36m[ack-webpack]\x1b[0m Watching')
         watching = true
@@ -47,3 +47,9 @@ module.exports = function(fromPath, outPath){
   }
 */
 }
+
+function getServerTime(){
+  return formatTime(new Date())
+}
+
+function formatTime(d){var h=d.getHours(),t='AM',m=d.getMinutes();m=m<10?'0'+m:m;h=h>=12?(t='PM',h-12||12):h==0?12:h;return ('0'+h).slice(-2)+':'+m+':'+d.getMilliseconds()+' '+t}
