@@ -13,13 +13,20 @@ module.exports = function(fromPath, outPath){
   const watch = process.argv.indexOf('--watch')>0
 
   if(watch){
-    console.log('\x1b[36m[ack-webpack]\x1b[0m Watching')
+    let watching = false
+    console.log('\x1b[36m[ack-webpack]\x1b[0m Watch Building')
     compiler.watch({ // watch options:
       aggregateTimeout: 300, // wait so long for more changes
       poll: true // use polling instead of native watchers
       // pass a number to set the polling interval
     }, function(err, stats) {
       if(err)return console.error(err)
+      if(watching){
+        console.log('\x1b[36m[ack-webpack]\x1b[0m Rebuilt')
+      }else{
+        console.log('\x1b[36m[ack-webpack]\x1b[0m Watching')
+        watching = true
+      }
     });
   }else{
     console.log('\x1b[36m[ack-webpack]\x1b[0m Building')
@@ -31,11 +38,12 @@ module.exports = function(fromPath, outPath){
       console.log('\x1b[36m[ack-webpack]\x1b[0m Building Completed')
     });
   }
-
+/*
   function relatize(p){
     if(p.substring(0, path.sep.length)!=path.sep){
       p = path.join(process.cwd(), p)
     }
     return p
   }
+*/
 }
