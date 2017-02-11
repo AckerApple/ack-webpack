@@ -1,1 +1,1 @@
-console.log( 'xxx', process.cwd() )
+console.log( 'xxx', process.cwd(), process.execPath )
