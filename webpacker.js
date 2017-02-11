@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require("webpack");
+const log = require("./log.function");
 const staticConfig = require('./webpack.config')
 
 module.exports = function(fromPath, outPath){
@@ -14,7 +15,7 @@ module.exports = function(fromPath, outPath){
 
   if(watch){
     let watching = false
-    console.log('\x1b[36m[ack-webpack]\x1b[0m Watch Building')
+    log('Watch Building')
     compiler.watch({ // watch options:
       aggregateTimeout: 300, // wait so long for more changes
       poll: true // use polling instead of native watchers
@@ -22,20 +23,20 @@ module.exports = function(fromPath, outPath){
     }, function(err, stats) {
       if(err)return console.error(err)
       if(watching){
-        console.log('\x1b[36m[ack-webpack]\x1b[0m Rebuilt '+getServerTime())
+        log('Rebuilt '+getServerTime())
       }else{
-        console.log('\x1b[36m[ack-webpack]\x1b[0m Watching')
+        log('Watching')
         watching = true
       }
     });
   }else{
-    console.log('\x1b[36m[ack-webpack]\x1b[0m Building')
+    log('Building')
     compiler.run(function(err, stats) {
       if(err){
-        console.log('\x1b[31m[ack-webpack]\x1b[0m Failed-to-Build')
+        log('Failed-to-Build')
         return console.error(err)
       }
-      console.log('\x1b[36m[ack-webpack]\x1b[0m Building Completed')
+      log('Building Completed')
     });
   }
 /*
