@@ -1,38 +1,66 @@
 const webpack = require('webpack')
 const path = require('path')
 
+const supportTs = resolver('ts-loader')
+const supportBabel = resolver('babel-loader')
+const supportJson = resolver('json-loader')
+const supportPug = resolver('pug-loader')
+
+const sourceMap = process.argv.indexOf('--skip-source-maps')<0 && process.argv.indexOf('--production')<0
+const minify = process.argv.indexOf('--minify')>=0 || process.argv.indexOf('--production')>0
+
+function resolver(){
+  try{
+    return require.resolve('ts-loader')
+  }catch(e){
+    return false
+  }
+}
+
+const jsLoader = {
+  test: /\.js$/,
+  exclude: /node_modules\/localforage/,//cant be bundled last time checked. This might not belong here
+  loader: null,
+  query: {
+    presets: ['es2015']//this maybe only needed for babel?
+  }
+}
+const extensions = ['', '.webpack.js', '.web.js', '.js']
+const loaders = [jsLoader]
+
+if(supportTs){
+  extensions.pop('.ts')
+  loaders.pop({ test: /\.ts$/, loader: 'ts-loader' })
+  jsLoader.loader = 'ts-loader'
+}
+
+if(supportJson){
+  extensions.pop('.json')
+  loaders.pop({ test: /\.json$/, loader: "json-loader" })
+}
+
+if(supportPug){
+  extensions.pop('.pug')
+  extensions.pop('.jade')
+  loaders.pop({ test: /\.(jade|pug)$/, loader: "pug" })
+}
+
+if(supportBabel){
+  jsLoader.loader = 'babel-loader'
+}
+
 const config = {
   bail:true,
-  //entry: './src/ack-angular.js',
-  //output: path.join(__dirname,'www','ack-angular.js'),
-//NEW
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js','.json','.pug','.jade']
+    extensions: extensions
   },
-
   module:{
-    preLoaders: [
-      { test: /\.json$/, loader: "json-loader" },
-    ],
-    loaders: [
-//NEW
-      { test: /\.ts$/, loader: 'ts-loader' },
-      
-      { test: /\.(jade|pug)$/, loader: "pug" },
-      {
-        test: /\.js$/,
-        exclude: /node_modules\/localforage/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
-      }
-    ]
+    loaders: loaders
   },
   plugins: []
 }
 
-if(process.argv.indexOf('--skip-source-maps')<0 && process.argv.indexOf('--production')<0){
+if(sourceMap){
   config.devtool = "#source-map"
   /*
   config.plugins.push(
@@ -44,7 +72,7 @@ if(process.argv.indexOf('--skip-source-maps')<0 && process.argv.indexOf('--produ
 }
 
 
-if(process.argv.indexOf('--minify')>=0 || process.argv.indexOf('--production')>0){
+if(minify){
   config.plugins.push(
     new webpack.optimize.UglifyJsPlugin({
       compress: {warnings:false}
