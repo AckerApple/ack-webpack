@@ -9,9 +9,9 @@ const supportPug = resolver('pug-loader')
 const sourceMap = process.argv.indexOf('--skip-source-maps')<0 && process.argv.indexOf('--production')<0
 const minify = process.argv.indexOf('--minify')>=0 || process.argv.indexOf('--production')>0
 
-function resolver(){
+function resolver(name){
   try{
-    return require.resolve('ts-loader')
+    return require.resolve(name)
   }catch(e){
     return false
   }
@@ -25,24 +25,24 @@ const jsLoader = {
     presets: ['es2015']//this maybe only needed for babel?
   }
 }
-const extensions = ['', '.webpack.js', '.web.js', '.js']
+const extensions = ['.webpack.js', '.web.js', '.js']
 const loaders = [jsLoader]
 
 if(supportTs){
-  extensions.pop('.ts')
-  loaders.pop({ test: /\.ts$/, loader: 'ts-loader' })
+  extensions.push('.ts')
+  loaders.push({ test: /\.ts$/, loader: 'ts-loader' })
   jsLoader.loader = 'ts-loader'
 }
 
 if(supportJson){
-  extensions.pop('.json')
-  loaders.pop({ test: /\.json$/, loader: "json-loader" })
+  extensions.push('.json')
+  loaders.push({ test: /\.json$/, loader: "json-loader" })
 }
 
 if(supportPug){
-  extensions.pop('.pug')
-  extensions.pop('.jade')
-  loaders.pop({ test: /\.(jade|pug)$/, loader: "pug" })
+  extensions.push('.pug')
+  extensions.push('.jade')
+  loaders.push({ test: /\.(jade|pug)$/, loader: "pug" })
 }
 
 if(supportBabel){
