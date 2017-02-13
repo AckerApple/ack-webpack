@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A code bundler that drastically reduces setup time by offering an init prompt of project setup questions",
   "main": "webpack.config.js",
   "scripts": {
@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/AckerApple/ack-webpack#readme",
   "dependencies": {
-    "prompt": "^1.0.0"
+    "prompt": "^1.0.0",
+    "reload": "^1.1.1"
   },
   "devDependencies": {
     "json-loader": "^0.5.4",

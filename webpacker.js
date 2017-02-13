@@ -10,8 +10,16 @@ module.exports = function(fromPath, outPath){
     path:path.join(outPath,'../'),
     filename:outPath.split(path.sep).pop()
   }
+  
   const compiler = webpack(config);
   const watch = process.argv.indexOf('--watch')>0
+  const browser = process.argv.indexOf('--browser')>0
+  
+  const portArgIndex = process.argv.indexOf('--port')>0
+  let port = 3000
+  if(portArgIndex>0){
+    port = Number( process.argv[portArgIndex+1] )
+  }
 
   if(watch){
     let watching = false
@@ -39,6 +47,29 @@ module.exports = function(fromPath, outPath){
         return console.error(err)
       }
       log('Building Completed in '+(Date.now()-startBuildTime)/1000+' seconds')
+    });
+  }
+
+  if(browser){
+    var reloadCallback = null
+    const reload = require('reload')
+
+    //fake express app for reload
+    const app = function(req,res){
+      res.type = function(value){res.setHeader('Content-Type',value)}
+      res.send = function(content){res.end(JSON.stringify(content))}
+      reloadCallback ? reloadCallback(req,res) : res.end('404 missing reload callback')
+    }
+
+    const server = http.createServer(app)
+    app.get = function(route,callback){
+      reloadCallback = callback
+    }
+
+    reload(server, app)
+
+    server.listen(port, function(err){
+      log("Web server listening on port " + port);
     });
   }
 /*
