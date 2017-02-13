@@ -16,6 +16,7 @@ module.exports = function(fromPath, outPath){
   if(watch){
     let watching = false
     log('Watch Building')
+    const startWatchTime = Date.now()
     compiler.watch({ // watch options:
       aggregateTimeout: 300, // wait so long for more changes
       poll: true // use polling instead of native watchers
@@ -25,18 +26,19 @@ module.exports = function(fromPath, outPath){
       if(watching){
         log('Rebuilt '+getServerTime())
       }else{
-        log('Watching')
+        log('Watching '+(Date.now()-startWatchTime)/1000+' seconds')
         watching = true
       }
     });
   }else{
     log('Building')
+    const startBuildTime = Date.now()
     compiler.run(function(err, stats) {
       if(err){
         log('Failed-to-Build')
         return console.error(err)
       }
-      log('Building Completed')
+      log('Building Completed in '+(Date.now()-startBuildTime)/1000+' seconds')
     });
   }
 /*
