@@ -2,7 +2,7 @@
 const path = require('path')
 const firstArg = process.argv[2]
 
-switch(inPath){
+switch(firstArg){
   case 'init':require('./init')
     break
 
