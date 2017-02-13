@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const path = require('path')
 const firstArg = process.argv[2]
-const webpacker = require('./webpacker')
 
 switch(inPath){
   case 'init':require('./init')
@@ -13,7 +12,7 @@ switch(inPath){
 function runWebpacker(){
   const inPath = relatize(firstArg)
   const outPath = relatize(process.argv[3])
-  webpacker(inPath, outPath)
+  require('./webpacker')(inPath, outPath)
 }
 
 function relatize(p){
