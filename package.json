@@ -28,8 +28,10 @@
   },
   "homepage": "https://github.com/AckerApple/ack-webpack#readme",
   "dependencies": {
+    "node-static": "^0.7.9",
     "prompt": "^1.0.0",
-    "reload": "^1.1.1"
+    "reload": "^1.1.1",
+    "watch": "^1.0.1"
   },
   "devDependencies": {
     "json-loader": "^0.5.4",

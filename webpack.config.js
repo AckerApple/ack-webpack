@@ -26,12 +26,12 @@ const jsLoader = {
   }
 }
 const extensions = ['.webpack.js', '.web.js', '.js']
-const loaders = [jsLoader]
+const loaders = []
 
 if(supportTs){
   extensions.push('.ts')
   loaders.push({ test: /\.ts$/, loader: 'ts-loader' })
-  jsLoader.loader = 'ts-loader'
+  //jsLoader.loader = 'ts-loader'
 }
 
 if(supportJson){
@@ -47,6 +47,7 @@ if(supportPug){
 
 if(supportBabel){
   jsLoader.loader = 'babel-loader'
+  loaders.push(jsLoader)
 }
 
 const config = {
