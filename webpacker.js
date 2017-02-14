@@ -3,12 +3,6 @@ const webpack = require("webpack");
 const log = require("./log.function");
 const staticConfig = require('./webpack.config')
 
-/* todo: create ack-reload */
-const fs = require('fs')
-const http = require('http')
-const watch = require('watch')
-const open = require('open')
-
 module.exports = function(fromPath, outPath){
   const config = Object.assign({}, staticConfig)
 
@@ -111,6 +105,14 @@ function startWatchingFolder(pathTo,reloader){
   })
 }
 
+function formatTime(d){var h=d.getHours(),t='AM',m=d.getMinutes();m=m<10?'0'+m:m;h=h>=12?(t='PM',h-12||12):h==0?12:h;return ('0'+h).slice(-2)+':'+m+':'+d.getMilliseconds()+' '+t}
+
+/* todo: move all below to ack-reload */
+const fs = require('fs')
+const http = require('http')
+const watch = require('watch')
+const open = require('open')
+
 function createFolderWatchServer(outputFileFolder, port){
   var reloadCallback = null
   const reload = require('reload')
@@ -132,9 +134,9 @@ function createFolderWatchServer(outputFileFolder, port){
       return reloadCallback ? reloadCallback(req,res) : res.end('404 missing reload callback')
     }
 
-    if(req.url=='/'){
+    const index = req.url ==='/' || req.url.seach(/[^?]*(\.html)(\?.)*/)
+    if(index){
       let reqFile = req.url.replace(/(.*\/)([^?]*)(\?.*)*/g,'$2')
-      console.log('reqFile',reqFile)
       reqFile = reqFile || 'index.html'
       reqFile = reqFile.replace('/',path.sep)
       let fileContents = fs.readFileSync(path.join(outputFileFolder,reqFile)).toString()
@@ -161,6 +163,3 @@ function createFolderWatchServer(outputFileFolder, port){
   })
   .then(()=>startWatchingFolder(outputFileFolder, reloader))
 }
-
-
-function formatTime(d){var h=d.getHours(),t='AM',m=d.getMinutes();m=m<10?'0'+m:m;h=h>=12?(t='PM',h-12||12):h==0?12:h;return ('0'+h).slice(-2)+':'+m+':'+d.getMilliseconds()+' '+t}
