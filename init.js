@@ -49,6 +49,8 @@ function isLikeTrue(v){
 }
 
 function processBooleanPrompts(results){
+  if(!results)return;
+
   const useWebpack = !results.useWebpack.length || isLikeTrue(results.useWebpack)
   const usePug = !results.usePug.length || isLikeTrue(results.usePug)
   const useJson = !results.useJson.length || isLikeTrue(results.useJson)
@@ -157,6 +159,7 @@ function install(name){
 }
 
 runPrompts()
+.then( ()=>prompt.stop?prompt.stop():null )
 .catch(e=>{
   if(e.message=='canceled'){
     console.log();

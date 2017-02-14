@@ -4,6 +4,8 @@ All notable changes to this project will be documented here.
 ## [1.1.1] - 2017-02-13
 ### Added
 - Almost everything needed to watch, serve, and reload browser files
+### Fixed
+- Made Windows friendly
 
 ## [1.1.0] - 2017-02-12
 ### Breaking Changes

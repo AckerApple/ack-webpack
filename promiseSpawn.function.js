@@ -1,12 +1,28 @@
 const childProcess = require('child_process')
 const spawn = childProcess.spawn;
+const windows = process.platform === 'win32'
+
+const spawnOptions = {
+  cwd: process.cwd(),
+  env: process.env,
+  shell:windows
+}
+
+function filterArgs(args){
+  return args.map(value=>escape(value))
+}
 
 module.exports = function promiseJavaSpawn(sArgs){
   return new Promise((res,rej)=>{
     const dataArray = []
+
+    if(windows){
+      sArgs = filterArgs(sArgs)
+    }
+
     const command = sArgs.shift()
-    const ls = spawn(command, sArgs);
-    let spawnError = null
+    const ls = spawn(command, sArgs, spawnOptions);
+    var spawnError = null
 
     const upgradeError = err=>{
       if(!err)return err
