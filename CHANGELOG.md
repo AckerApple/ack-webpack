@@ -1,11 +1,14 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.2] - 2017-02-14
+### Fixed
+- Made Windows friendly
+- Pug loader syntax issues
+
 ## [1.1.1] - 2017-02-13
 ### Added
 - Almost everything needed to watch, serve, and reload browser files
-### Fixed
-- Made Windows friendly
 
 ## [1.1.0] - 2017-02-12
 ### Breaking Changes

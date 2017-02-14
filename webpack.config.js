@@ -42,7 +42,7 @@ if(supportJson){
 if(supportPug){
   extensions.push('.pug')
   extensions.push('.jade')
-  loaders.push({ test: /\.(jade|pug)$/, loader: "pug" })
+  loaders.push({ test: /\.(jade|pug)$/, loader: "pug-loader" })
 }
 
 if(supportBabel){
