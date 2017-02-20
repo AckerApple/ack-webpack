@@ -68,7 +68,7 @@ module.exports = function(fromPath, outPath){
   }
 
   return promise
-  .catch(e=>console.error(e))
+  .catch(e=>log.error(e))
 }
 
 function watchCompiler(compiler){

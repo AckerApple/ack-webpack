@@ -6,7 +6,6 @@ setTimeout(function(){
   document.body.innerHTML += '<div>-- view console : '+Date.now()+' --</div>'
 }, 700)
 
-
 console.log(message)
 
 console.log('done',new Date())

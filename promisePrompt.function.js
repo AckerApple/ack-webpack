@@ -3,7 +3,7 @@ const prompt = require('prompt')
 /** You must run .stop when done with prompts */
 module.exports = function promisePrompt(scheme, options){
   options = options || {}
-  options.message = options.message || 'reload'
+  options.message = options.message || '[ack-webpack]'
   return new Promise(function(res,rej){
     prompt.message = options.message
     prompt.start()

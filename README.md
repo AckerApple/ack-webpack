@@ -1,5 +1,5 @@
 # ack-webpack
-A code bundler that drastically reduces setup time by offering an init prompt of project setup questions
+Code bundler that drastically reduces setup time by offering an init prompt of project setup questions. Includes one of the best browser reloaders to auto refresh on code changes.
 
 > 3 Step Process
 - install
@@ -60,15 +60,16 @@ ack-webpack app/index.js www/app.js --production
 
 Watch Example
 ```
-ack-webpack app/index.js www/app.js --watch
+ack-webpack app/index.js www/app.js --watch --browser=www/
 ```
 
 #### Command Options
 
-- **skip-source-maps** - javascript minify pointers in .map file (adds compile time)
-- **production** - output files will be minified with NO source-maps
-- **minify** - output files will be compressed
-- **watch** - files are built and kept in memory and recompiled on any change
+- **skip-source-maps** Boolean - javascript minify pointers in .map file (adds compile time)
+- **production** Boolean = false - output files will be minified with NO source-maps
+- **minify** Boolean = false - output files will be compressed
+- **watch** Boolean = false - files are built and kept in memory and recompiled on any change
+- **browser** String - opens browser on computer. Add = sign and path to server if not same path as build file
 
 
 #### Time Saver Scripts
@@ -79,7 +80,7 @@ package.json convenience scripts
 {
   "scripts":{
     "build": "ack-webpack src-path/index.js www/index.js --production",
-    "watch": "ack-webpack src-path/index.js www/index.js --watch"
+    "watch": "ack-webpack src-path/index.js www/index.js --watch --browser=www/"
   }
 }
 ```

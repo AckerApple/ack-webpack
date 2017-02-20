@@ -1,6 +1,11 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.3] - 2017-02-20
+### Added
+- completed integration of updated-reload code
+- now able to open browser and auto refresh on code changes
+
 ## [1.1.2] - 2017-02-14
 ### Fixed
 - Made Windows friendly

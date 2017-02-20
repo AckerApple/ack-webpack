@@ -1,6 +1,8 @@
 const promiseSpawn = require('./promiseSpawn.function')
 const path = require('path')
 const fs = require('fs')
+const log = require("./log.function");
+
 const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader']
 const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
@@ -118,7 +120,7 @@ function createTsConfig(){
       err ? rej(err) : res()
     })
   })
-  .then(()=>console.log("ack-webpack: created tsconfig.json"))
+  .then(()=>log("ack-webpack: created tsconfig.json"))
 }
 
 function installBabel(){
@@ -145,7 +147,7 @@ function installPacks(packs){
 
 function install(name){
   const args = ['npm','install',name,'--save-dev']
-  console.log('$',args.join(' '))
+  log('$',args.join(' '))
   return promiseSpawn(args)
 }
 
@@ -155,5 +157,5 @@ runPrompts()
     console.log();
     return
   }
-  console.error(e)
+  log.error(e)
 })

@@ -91,7 +91,6 @@ setTimeout(function(){
   document.body.innerHTML += '<div>-- view console : '+Date.now()+' --</div>'
 }, 700)
 
-
 console.log(__WEBPACK_IMPORTED_MODULE_0__index_json__["message"])
 
 console.log('done',new Date())
