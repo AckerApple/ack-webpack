@@ -5,9 +5,10 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "node ./cli test/assets/index.js test/assets/index-build.js",
-    "test:watch": "node ./cli test/assets/index.js test/assets/index-build.js --watch",
+    "test:watch": "node ./cli test/assets/index.js test/assets/index-build.js --watch --browser=test",
     "test:production": "node ./cli test/assets/index.js test/assets/index-build.js --production",
-    "postinstall": "node ./postinstall"
+    "postinstall": "node ./postinstall",
+    "ack-webpack": "node ./cli"
   },
   "bin": {
     "ack-webpack": "./cli.js"
@@ -30,15 +31,8 @@
   "dependencies": {
     "node-static": "^0.7.9",
     "prompt": "^1.0.0",
-    "reload": "^1.1.1",
+    "reload": "github:ackerapple/reload",
     "watch": "^1.0.1"
   },
-  "devDependencies": {
-    "json-loader": "^0.5.4",
-    "pug": "^2.0.0-beta11",
-    "pug-loader": "^2.3.0",
-    "ts-loader": "^2.0.0",
-    "typescript": "^2.1.6",
-    "webpack": "^2.2.1"
-  }
+  "devDependencies": {}
 }

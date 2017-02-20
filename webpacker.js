@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const log = require("./log.function");
 const staticConfig = require('./webpack.config')
 
+const reload = require('reload')
+
 module.exports = function(fromPath, outPath){
   const config = Object.assign({}, staticConfig)
 
@@ -17,7 +19,13 @@ module.exports = function(fromPath, outPath){
   
   const compiler = webpack(config);
   const watchMode = process.argv.indexOf('--watch')>0
-  const browser = process.argv.indexOf('--browser')>0
+
+  var browser = null
+  process.argv.forEach((a,i)=>{
+    if(a.search(/^--browser/)>=0){
+      browser = a
+    }
+  })
   
   const portArgIndex = process.argv.indexOf('--port')>0
   let port = 3000
@@ -28,9 +36,35 @@ module.exports = function(fromPath, outPath){
   let promise = watchMode ? watchCompiler(compiler) : buildCompiler(compiler)
 
   if(browser){
+    let browserFolderPath = outputFileFolder
+    const browserDef = browser.split('=')
+
+    if(browserDef.length>1){
+      browserDef.shift()//remove first part
+      browserFolderPath = browserDef.join('=')
+
+      if( !path.isAbsolute(browserFolderPath) ){
+        browserFolderPath = path.join(process.cwd(), browserFolderPath)
+      }
+    }
+
+
+    const options = {
+      open:true,
+      //hostname:'127.0.0.1',
+      //startPage:'index.html',
+      message:'[ack-webpack]',
+      log:log,
+      port:port,
+      //ignoreDotFiles:true,
+      /*
+      filter:function(pathTo,stat){
+        return stat.isDirectory() || pathTo.search(/\.(js|css|html)$/)>=0
+      }*/
+    }
+
     promise = promise
-    .then(()=>createFolderWatchServer(outputFileFolder, port))
-    .then(()=>open('http://localhost:' + port))
+    .then(()=>reload(browserFolderPath, options))
   }
 
   return promise
@@ -83,83 +117,7 @@ function getServerTime(){
   return formatTime(new Date())
 }
 
-function startWatchingFolder(pathTo,reloader){    
-  const watchOptions = {
-    ignoreDotFiles:true,
-    filter:function(pathTo){
-      return pathTo.search(/\.(js|css|html)$/)>=0
-    }
-  }
-  watch.createMonitor(pathTo, watchOptions, function (monitor) {
-    //monitor.files['/home/mikeal/.zshrc'] // Stat object for my zshrc.
-    monitor.on("created", function (f, stat) {
-      reloader.reload()// Handle new files
-    })
-    monitor.on("changed", function (f, curr, prev) {
-      reloader.reload()// Handle file changes
-    })
-    monitor.on("removed", function (f, stat) {
-      reloader.reload()// Handle removed files
-    })
-    //monitor.stop(); // Stop watching
-  })
-}
 
 function formatTime(d){var h=d.getHours(),t='AM',m=d.getMinutes();m=m<10?'0'+m:m;h=h>=12?(t='PM',h-12||12):h==0?12:h;return ('0'+h).slice(-2)+':'+m+':'+d.getMilliseconds()+' '+t}
 
-/* todo: move all below to ack-reload */
-const fs = require('fs')
-const http = require('http')
-const watch = require('watch')
-const open = require('open')
 
-function createFolderWatchServer(outputFileFolder, port){
-  var reloadCallback = null
-  const reload = require('reload')
-  const reloadServer = require('reload')
-  const static = require('node-static')
-  const fileRouter = new static.Server(outputFileFolder);
-  //const WebSocketServer = require('ws').Server
-
-  //fake express app for reload
-  const app = function(req,res){
-    if(req.url=='/reload/reload.js'){      
-      res.type = function(value){res.setHeader('Content-Type',value)}
-      res.send = function(content){
-        if(content.constructor!=String){
-          content = JSON.stringify(content)
-        }
-        res.end(content)
-      }
-      return reloadCallback ? reloadCallback(req,res) : res.end('404 missing reload callback')
-    }
-
-    const index = req.url ==='/' || req.url.seach(/[^?]*(\.html)(\?.)*/)
-    if(index){
-      let reqFile = req.url.replace(/(.*\/)([^?]*)(\?.*)*/g,'$2')
-      reqFile = reqFile || 'index.html'
-      reqFile = reqFile.replace('/',path.sep)
-      let fileContents = fs.readFileSync(path.join(outputFileFolder,reqFile)).toString()
-      fileContents += '<script src="/reload/reload.js"></script>'
-      res.setHeader('Content-Type','text/html')
-      res.end(fileContents)        
-    }else{
-      fileRouter.serve(req,res)
-    }
-  }
-
-  const httpServer = http.createServer(app)
-  app.get = function(route,callback){
-    reloadCallback = callback
-  }
-  
-  const reloader = reload(httpServer, app)
-  return new Promise(function(res,rej){
-    httpServer.listen(port, function(err){
-      if(err)return rej(err)
-      log("Web server listening on port " + port);
-      res()
-    })
-  })
-  .then(()=>startWatchingFolder(outputFileFolder, reloader))
-}

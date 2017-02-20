@@ -1,22 +1,13 @@
 const promiseSpawn = require('./promiseSpawn.function')
 const path = require('path')
 const fs = require('fs')
-const prompt = require('prompt')
 const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader']
-const babelPacks = ['babel-core','babel-loader','babel-preset-es2015']
+const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
 const pugPacks = ['pug','pug-loader']
 const webPacks = ['webpack']
 
-function promisePrompt(scheme){
-  return new Promise(function(res,rej){
-    prompt.message = 'ack-webpack'
-    prompt.start()
-    prompt.get(scheme, function(err, result){
-      err ? rej(err) : res(result)
-    })
-  })
-}
+const promisePrompt = require('./promisePrompt.function')
 
 function runPrompts(){
   return runBooleanPrompts()
@@ -159,7 +150,6 @@ function install(name){
 }
 
 runPrompts()
-.then( ()=>prompt.stop?prompt.stop():null )
 .catch(e=>{
   if(e.message=='canceled'){
     console.log();
