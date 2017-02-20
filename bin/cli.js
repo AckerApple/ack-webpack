@@ -6,13 +6,16 @@ switch(firstArg){
   case 'init':require('./init')
     break
 
+  case 'reload':require('./reload')
+    break
+
   default:runWebpacker()
 }
 
 function runWebpacker(){
   const inPath = relatize(firstArg)
   const outPath = relatize(process.argv[3])
-  require('./webpacker')(inPath, outPath)
+  require('../webpacker')(inPath, outPath)
 }
 
 function relatize(p){

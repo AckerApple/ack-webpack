@@ -1,7 +1,7 @@
-const promiseSpawn = require('./promiseSpawn.function')
+const promiseSpawn = require('../promiseSpawn.function')
 const path = require('path')
 const fs = require('fs')
-const log = require("./log.function");
+const log = require("../log.function");
 
 const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader']
@@ -9,7 +9,7 @@ const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
 const pugPacks = ['pug','pug-loader']
 const webPacks = ['webpack']
 
-const promisePrompt = require('./promisePrompt.function')
+const promisePrompt = require('../promisePrompt.function')
 
 function runPrompts(){
   return runBooleanPrompts()

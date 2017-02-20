@@ -53,15 +53,27 @@ Build Example
 npm run ack-webpack -- app/index.js www/app.js --production
 ```
 
-Same Above Build Example, with Global Installation
+Build Example 2. Same Above Example, using Global Installation
 ```
 ack-webpack app/index.js www/app.js --production
 ```
 
-Watch Example
+Build, Watch Code, and Reload Browser Example
 ```
 ack-webpack app/index.js www/app.js --watch --browser=www/
 ```
+
+Browser Test Example
+```
+ack-webpack reload www
+```
+
+Build. After Build, Show in Browser Example
+```
+ack-webpack app/index.js www/app.js --production --browser
+```
+
+
 
 #### Command Options
 
@@ -70,7 +82,7 @@ ack-webpack app/index.js www/app.js --watch --browser=www/
 - **minify** Boolean = false - output files will be compressed
 - **watch** Boolean = false - files are built and kept in memory and recompiled on any change
 - **browser** String - opens browser on computer. Add = sign and path to server if not same path as build file
-
+- **port** Number = 3000 - What port to run reload browser
 
 #### Time Saver Scripts
 Add these recommended entries into your package.json scripts to save yourself sometime
@@ -79,6 +91,7 @@ package.json convenience scripts
 ```
 {
   "scripts":{
+    "start": "ack-webpack reload src-path",
     "build": "ack-webpack src-path/index.js www/index.js --production",
     "watch": "ack-webpack src-path/index.js www/index.js --watch --browser=www/"
   }

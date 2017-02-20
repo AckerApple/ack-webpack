@@ -5,6 +5,7 @@ const staticConfig = require('./webpack.config')
 
 const reload = require('reload')
 
+/** uses process args to determin port and if to watch */
 module.exports = function(fromPath, outPath){
   const config = Object.assign({}, staticConfig)
 
