@@ -1,5 +1,5 @@
 # ack-webpack
-Code bundler that drastically reduces setup time by offering an init prompt of project setup questions. Includes one of the best browser reloaders to auto refresh on code changes.
+A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.
 
 > 3 Step Process
 - install
