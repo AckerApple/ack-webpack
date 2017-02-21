@@ -75,44 +75,67 @@ function processBooleanPrompts(results){
 }
 
 function runTransPrompt(){
+  const config = {}
+
   return promisePrompt([{
     description:'Which ES6 transpiler would you like to use, Babel or TypeScript?',
     name:'transpiler',
     default:'typescript'
   }])
+  .then(results=>{
+    Object.assign(config, results)
+  })
+  .then(()=>{
+    if(config.transpiler.toLowerCase()=='typescript'){
+      return runTypescriptPrompt()
+    }
+  })
+  .then(tResults=>{
+    if(tResults)Object.assign(config, tResults)
+
+    return config
+  })
 }
 
 function processTranPrompt(results){
   switch(results.transpiler.toLowerCase()){
-    case 'babel':return installBabel()
-    default:return installTypescript()
+    case 'babel':return installBabel(results)
+    default:return installTypescript(results)
   }
 }
 
-function installTypescript(){
-  return installPacks(typesPacks).then( paramTsConfig )
+function runTypescriptPrompt(){
+  return promisePrompt([{
+    description:'Typescript index path',
+    name:'indexPath',
+    default:'index.ts'
+  }])
+}
+
+function installTypescript(options){
+  return installPacks(typesPacks).then(()=>paramTsConfig(options))
 }
 
 function getTsConfigPath(){
   return path.join(process.cwd(),'tsconfig.json')
 }
 
-function paramTsConfig(){
+function paramTsConfig(options){
   const tsConfigPath = getTsConfigPath()
   return new Promise(function(res,rej){
     fs.readFile(tsConfigPath,function(err,buff){
-      err ? createTsConfig() : res()
+      err ? createTsConfig(options) : res()
     })
   })
 }
 
-function createTsConfig(){
+function createTsConfig(options={}){
   const tsConfig = {
     "compilerOptions": {
       "module": "commonjs"
     },
     "files": [
-      "index.ts"
+      options.indexPath || "index.ts"
     ]
   }
   return new Promise((res,rej)=>{
