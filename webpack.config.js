@@ -54,6 +54,7 @@ if(supportJson){
 }
 
 if(supportBabel){
+  extensions.push('.js')
   jsLoader.loader = 'babel-loader'
   loaders.push(jsLoader)
 }

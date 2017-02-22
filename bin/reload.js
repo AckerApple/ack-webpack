@@ -6,7 +6,7 @@ const options = {
 
 var portArgIndex = process.argv.indexOf('-p')
 if(portArgIndex<0)portArgIndex = process.argv.indexOf('--port')
-options.port = portArgIndex>=0 ? process.argv[portArgIndex+1] : 3000
+options.port = portArgIndex>=0 ? process.argv[portArgIndex+1] : 8080
 
 
 reload(process.argv[3],options)

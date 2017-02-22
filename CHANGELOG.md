@@ -1,7 +1,9 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.1.7] - 2017-02-22
+## [1.1.8] - 2017-02-22
+### Changed
+- default port is 8080 instead of 3000
 ### Fixed
 - webpack.config.js for typescript
 - bad if condition for minify
