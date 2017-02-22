@@ -1,9 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.1.6] - 2017-02-22
+## [1.1.7] - 2017-02-22
 ### Fixed
 - webpack.config.js for typescript
+- bad if condition for minify
 
 ## [1.1.5] - 2017-02-20
 ### Added

@@ -8,7 +8,7 @@ const supportPug = resolver('pug-loader')
 
 const production = process.argv.indexOf('--production')>=0
 const sourceMap = process.argv.indexOf('--skip-source-maps')<0 && !production
-const minify = process.argv.indexOf('--minify')>=0 || !production
+const minify = process.argv.indexOf('--minify')>=0 || production
 
 function resolver(name){
   try{
@@ -72,13 +72,14 @@ const config = {
 if(sourceMap){
   config.devtool = "#source-map"
   //config.devtool = "source-map"
-  /*
+/*
   config.plugins.push(
     new webpack.SourceMapDevToolPlugin({
         //filename: 'xxx.map',
         exclude: ['*.js']
     })
-  )*/
+  )
+*/
 }
 
 
@@ -91,7 +92,6 @@ if(minify){
 }
 
 if(production) {
-  console.log('production',production)
   config.plugins.push(new webpack.optimize.DedupePlugin());
   config.plugins.push(new webpack.NoErrorsPlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
