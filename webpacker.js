@@ -34,7 +34,14 @@ module.exports = function(fromPath, outPath){
     port = Number( process.argv[portArgIndex+1] )
   }
 
-  let promise = watchMode ? watchCompiler(compiler) : buildCompiler(compiler)
+  let onRebuild = function(){}//foo onRebuild function that will be replaced
+  const compileOps = {
+    onRebuild:function(stat){//memory container link to true onRebuild function
+      onRebuild(stat)
+    }
+  }
+  
+  let promise = watchMode ? watchCompiler(compiler,compileOps) : buildCompiler(compiler,compileOps)
 
   if(browser){
     let browserFolderPath = outputFileFolder
@@ -49,9 +56,9 @@ module.exports = function(fromPath, outPath){
       }
     }
 
-
     const options = {
       open:true,
+      watch:false,
       //hostname:'127.0.0.1',
       //startPage:'index.html',
       message:'[ack-webpack]',
@@ -66,36 +73,42 @@ module.exports = function(fromPath, outPath){
 
     promise = promise
     .then(()=>reload(browserFolderPath, options))
+    .then(reloadConfig=>onRebuild = reloadConfig.reload)
   }
 
   return promise
   .catch(e=>log.error(e))
 }
 
-function watchCompiler(compiler){
+/** use npm watch for file watching
+  @options{
+    onRebuild
+  }
+*/
+function watchCompiler(compiler, options={}){
   let watching = false
   log('Watch Building')
   const startWatchTime = Date.now()
   const watchConfig = { // watch options:
-    aggregateTimeout: 300, // wait so long for more changes
-    poll: true // use polling instead of native watchers
+    //aggregateTimeout: 300, // wait so long for more changes
+    //poll: true // use polling instead of native watchers
     // pass a number to set the polling interval
   }
 
-  const callback = function(stats) {
-    if(watching){
-      log('Rebuilt '+getServerTime())
-    }else{
-      log('Watching '+(Date.now()-startWatchTime)/1000+' seconds')
-      watching = true
-    }
-    return stats
-  }
+  options.onRebuild = options.onRebuild || function(){}
 
-  return new Promise((res,rej)=>{
-    compiler.watch(watchConfig, (err,stats)=>{
+  return new Promise(function(res,rej){  
+    compiler.watch(watchConfig, function(err,stats){
       if(err)return rej(err)
-      res( callback(stats) )
+
+      if(watching){
+        log('Rebuilt '+getServerTime())
+        options.onRebuild(stats)
+      }else{
+        watching = true
+        log('Watching '+(Date.now()-startWatchTime)/1000+' seconds')
+        res( this )
+      }
     });
   })
 }

@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.9] - 2017-02-23
+### Enhanced
+- Watching files for browser reload is now lighting fast
+
 ## [1.1.8] - 2017-02-22
 ### Changed
 - default port is 8080 instead of 3000
