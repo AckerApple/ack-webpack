@@ -1,6 +1,12 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.11] - 2017-03-02
+### Change
+- tsconfig output handling. Now es5 is default transpile, left tsconfig.es6.json for future as default es6
+### Enhanced
+- Time output console string includes seconds now
+
 ## [1.1.9] - 2017-02-23
 ### Enhanced
 - Watching files for browser reload is now lighting fast

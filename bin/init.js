@@ -3,13 +3,15 @@ const path = require('path')
 const fs = require('fs')
 const log = require("../log.function");
 
-const jsonPacks = ['json-loader']
-const typesPacks = ['typescript','ts-loader']
+//const jsonPacks = ['json-loader']
+const typesPacks = ['typescript','ts-loader','core-js']
 const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
 const pugPacks = ['pug','pug-loader']
 const webPacks = ['webpack']
 
 const promisePrompt = require('../promisePrompt.function')
+
+const tsConfig = require('./tsconfig.es5.json')
 
 function runPrompts(){
   return runBooleanPrompts()
@@ -21,11 +23,11 @@ function runBooleanPrompts(){
     description:'Do you wish to intall webpack?',
     name:'useWebpack',
     default:'yes'
-  },{
+  }/*,{
     description:'Do you wish to enable JSON file import?',
     name:'useJson',
     default:'yes'
-  },{
+  }*/,{
     description:'Do you wish to enable PUG/JADE template-file import?',
     name:'usePug',
     default:'yes'
@@ -63,9 +65,9 @@ function processBooleanPrompts(results){
     promise = promise.then( ()=>processTranPrompt(tranPromptRes) )
   }
 
-  if(useJson){
+  /*if(useJson){
     promise = promise.then(installJson)
-  }
+  }*/
 
   if(usePug){
     promise = promise.then(installPug)
@@ -80,11 +82,12 @@ function runTransPrompt(){
   return promisePrompt([{
     description:'Which ES6 transpiler would you like to use, Babel or TypeScript?',
     name:'transpiler',
-    default:'typescript'
+    default:'babel'
   }])
   .then(results=>{
     Object.assign(config, results)
   })
+  /*
   .then(()=>{
     if(config.transpiler.toLowerCase()=='typescript'){
       return runTypescriptPrompt()
@@ -95,6 +98,7 @@ function runTransPrompt(){
 
     return config
   })
+  */
 }
 
 function processTranPrompt(results){
@@ -104,13 +108,13 @@ function processTranPrompt(results){
   }
 }
 
-function runTypescriptPrompt(){
+/*function runTypescriptPrompt(){
   return promisePrompt([{
     description:'Typescript index path',
     name:'indexPath',
     default:'index.ts'
   }])
-}
+}*/
 
 function installTypescript(options){
   return installPacks(typesPacks).then(()=>paramTsConfig(options))
@@ -130,14 +134,6 @@ function paramTsConfig(options){
 }
 
 function createTsConfig(options={}){
-  const tsConfig = {
-    "compilerOptions": {
-      "module": "commonjs"
-    },
-    "files": [
-      options.indexPath || "index.ts"
-    ]
-  }
   return new Promise((res,rej)=>{
     fs.writeFile(getTsConfigPath(), JSON.stringify(tsConfig, null, 2), (err)=>{
       err ? rej(err) : res()
@@ -150,9 +146,9 @@ function installBabel(){
   return installPacks(babelPacks)
 }
 
-function installJson(){
+/*function installJson(){
   return installPacks(jsonPacks)
-}
+}*/
 
 function installPug(){
   return installPacks(pugPacks)
