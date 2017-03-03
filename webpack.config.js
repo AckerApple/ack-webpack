@@ -51,8 +51,17 @@ if(supportTs){
   extensions.push('.ts')
   //extensions.push('.d.ts')
   extensions.push('.js')
-  //loaders.push({test: /\.ts$/,loader: 'awesome-typescript-loader'})
-  loaders.push({test: /\.ts$/,loader: 'ts-loader'})
+  const tsLoader = { test: /\.ts$/,loader: 'ts-loader', options:{} }
+  //const tsLoader = {test: /\.ts$/,loader: 'awesome-typescript-loader'}
+
+  //tsconfig file location  
+  const projectIndex = process.argv.indexOf('--project')
+  const configFileName = null
+  if( projectIndex>0 ){
+    tsLoader.options.configFileName = process.argv[projectIndex+1]
+  }
+
+  loaders.push(tsLoader)
 }
 /*
 if(supportJson){

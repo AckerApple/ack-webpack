@@ -41,7 +41,14 @@ module.exports = function(fromPath, outPath){
     }
   }
   
-  let promise = watchMode ? watchCompiler(compiler,compileOps) : buildCompiler(compiler,compileOps)
+  let promise = null
+
+  if(watchMode){
+    promise = watchCompiler(compiler,compileOps)
+  }else{
+    log('Bundling to',outPath)
+    promise = buildCompiler(compiler,compileOps)
+  }
 
   if(browser){
     let browserFolderPath = outputFileFolder
@@ -114,7 +121,6 @@ function watchCompiler(compiler, options={}){
 }
 
 function buildCompiler(compiler){
-  log('Building')
   const startBuildTime = Date.now()
   return new Promise((res,rej)=>{  
     compiler.run(function(err, stats) {

@@ -48,7 +48,7 @@ function processBooleanPrompts(results){
 
   const useWebpack = !results.useWebpack.length || isLikeTrue(results.useWebpack)
   const usePug = !results.usePug.length || isLikeTrue(results.usePug)
-  const useJson = !results.useJson.length || isLikeTrue(results.useJson)
+  //const useJson = !results.useJson.length || isLikeTrue(results.useJson)
   const useTran = !results.useTran.length || isLikeTrue(results.useTran)
   var tranPromptRes = null
   let promise = Promise.resolve()
@@ -82,10 +82,11 @@ function runTransPrompt(){
   return promisePrompt([{
     description:'Which ES6 transpiler would you like to use, Babel or TypeScript?',
     name:'transpiler',
-    default:'babel'
+    default:'typescript'//'babel'
   }])
   .then(results=>{
     Object.assign(config, results)
+    return config
   })
   /*
   .then(()=>{
