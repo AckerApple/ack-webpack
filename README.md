@@ -126,7 +126,10 @@ This will add an entry to your package.json jsDependencies
 npm run ack-webpack -- install ack-angular-fx
 ```
 
-> Currenty, you cannot specify a version in the install command. Coming soon. Maybe you can make the pull request for this?
+Compound Installs
+```
+npm run ack-webpack -- install ack-x ack-angular-fx@^1.03 ack-p
+```
 
 ### Install All jsDependencies
 Almost like `npm install` but for jsDependencies

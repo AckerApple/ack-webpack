@@ -63,14 +63,26 @@ class SubInstall{
   }
 
   saveInstallByName(name){
+    const vSplit = name.split('/').pop().split('@')
+    
+    if(vSplit.length>1){
+      const nameOnly = name.split('@')
+      nameOnly.pop()
+
+      let version = vSplit.pop()
+      return this.saveInstallBy(nameOnly.join('@'), version)
+    }
+
     return install.promiseVersion(name)
-    .then(version=>{
-      const pack = this.getPack()
-      pack.jsDependencies = pack.jsDependencies || {}
-      pack.jsDependencies[name] = version
-      this.savePack(pack)
-      return this.performInstallsBy(pack.jsDependencies)
-    })
+    .then(version=>this.saveInstallBy(name,version))
+  }
+
+  saveInstallBy(name, version){
+    const pack = this.getPack()
+    pack.jsDependencies = pack.jsDependencies || {}
+    pack.jsDependencies[name] = version
+    this.savePack(pack)
+    return this.performInstallsBy(pack.jsDependencies)
   }
 
   savePack(pack){
@@ -84,7 +96,10 @@ const subInstall = new SubInstall( rootPackPath )
 let promise = Promise.resolve()
 
 if(process.argv.length >= 3){
-  promise = promise.then(()=>subInstall.saveInstallByName( process.argv[3] ))
+  for(let x=3; x < process.argv.length; ++x){
+    if(process.argv[x].substring(0, 2)=='--')break;
+    promise = promise.then(()=>subInstall.saveInstallByName( process.argv[x] ))
+  }
 }else{
   promise = promise.then(()=>subInstall.performInstalls())
 }
