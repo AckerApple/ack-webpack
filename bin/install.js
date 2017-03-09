@@ -82,7 +82,10 @@ class SubInstall{
     pack.jsDependencies = pack.jsDependencies || {}
     pack.jsDependencies[name] = version
     this.savePack(pack)
-    return this.performInstallsBy(pack.jsDependencies)
+    
+    const installDef = {}
+    installDef[name] = version
+    return this.performInstallsBy(installDef)
   }
 
   savePack(pack){
