@@ -1,7 +1,7 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.1.15] - 2017-03-09
+## [1.1.16] - 2017-03-09
 ### Added
 - new install process that targets installing jsDependency definitions of package.json file
 

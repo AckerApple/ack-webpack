@@ -98,7 +98,7 @@ class SubInstall{
 const subInstall = new SubInstall( rootPackPath )
 let promise = Promise.resolve()
 
-if(process.argv.length >= 3){
+if(process.argv.length > 3){
   for(let x=3; x < process.argv.length; ++x){
     if(process.argv[x].substring(0, 2)=='--')break;
     promise = promise.then(()=>subInstall.saveInstallByName( process.argv[x] ))
