@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.",
   "main": "webpack.config.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "test:watch": "node ./bin/cli test/assets/index.js test/assets/index-build.js --watch --browser=test",
     "test:reload": "node ./bin/cli reload test --port 3001",
     "test:production": "node ./bin/cli test/assets/index.js test/assets/index-build.js --production",
+    "test:install": "node ./bin/cli install",
     "postinstall": "node ./postinstall",
     "ack-webpack": "node ./bin/cli"
   },
@@ -34,5 +35,8 @@
   },
   "devDependencies": {
     "webpack": "^2.2.1"
+  },
+  "jsDependencies":{
+    "ack-angular-fx": "^1.0.3"
   }
 }

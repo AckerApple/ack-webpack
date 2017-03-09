@@ -40,19 +40,24 @@ module.exports = function promiseJavaSpawn(sArgs){
       return err
     }
 
-    ls.stdout.on('data', data=>dataArray.push(data));
-    ls.stderr.on('data', data=>dataArray.push(data));
+    ls.stdout.on('data', data=>console.log(data.toString()));
+    //ls.stdout.on('data', data=>dataArray.push(data));
+    ls.stderr.on('data', data=>console.log(data.toString()));
+    //ls.stderr.on('data', data=>dataArray.push(data));
 
-    ls.stdout.on('error', err=>spawnError=err)
-    ls.stderr.on('error', err=>spawnError=err)
+    ls.stdout.on('error', err=>console.log(err))
+    //ls.stdout.on('error', err=>spawnError=err)
+    ls.stderr.on('error', err=>console.log(err))
+    //ls.stderr.on('error', err=>spawnError=err)
 
     ls.on('close', code=>{
       if(spawnError){
         return rej( upgradeError(spawnError) )
       }
 
-      const output = dataArray.join('')//bring all cli data together
-      res( output )
+      //const output = dataArray.join('')//bring all cli data together
+      //res( output )
+      res()
     })
   })
 }

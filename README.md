@@ -1,7 +1,9 @@
 # ack-webpack
 A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.
 
-> 3 Step Process
+> NOTE: This package does not depend on webpack and is completely useful without ever installing webpack
+
+Typical 3 Step Process
 - install
 - init
 - build or watch your code
@@ -17,7 +19,13 @@ A code bundler that drastically reduces setup time by offering an init prompt of
   - [Time Saver Scripts](#time-saver-scripts)
 
 ## Overview
-This package intends to greatly reduce common project setup times when using webpack to bundle javascript code.
+This package greatly reduces common project setup times for the task of bundling javascript code.
+
+- Includes ability to code watch without the use of webpack nor webpack-dev-server
+  - ack-webpack reloader does not include hot swap reloading, install webpack-dev-server for that boost
+- Includes sophisticated CLI init commands to help get a project going
+  - Somewhat experimental and needs refinements for more complicated tasks
+- Includes sophisticated CLI install commands to help included jsDependencies that are seperate from devDependencies
 
 ## Step One Installation
 Install ack-webpack into your project

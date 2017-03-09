@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.13] - 2017-03-09
+### Added
+- new install process that targets installing jsDependency definitions of package.json file
+
 ## [1.1.11] - 2017-03-02
 ### Change
 - tsconfig output handling. Now es5 is default transpile, left tsconfig.es6.json for future as default es6

@@ -3,11 +3,11 @@ const path = require('path')
 const firstArg = process.argv[2]
 
 switch(firstArg){
-  case 'init':require('./init')
-    break
+  case 'init':require('./init');break
 
-  case 'reload':require('./reload')
-    break
+  case 'reload':require('./reload');break
+
+  case 'install':require('./install');break
 
   default:runWebpacker()
 }

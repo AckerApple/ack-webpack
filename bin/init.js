@@ -1,7 +1,8 @@
 const promiseSpawn = require('../promiseSpawn.function')
+const install = require('../install.function')
 const path = require('path')
 const fs = require('fs')
-const log = require("../log.function");
+const log = require("../log.function")
 
 //const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader','core-js']
