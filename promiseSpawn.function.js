@@ -12,7 +12,12 @@ function filterArgs(args){
   return args.map(value=>escape(value))
 }
 
-module.exports = function promiseJavaSpawn(sArgs){
+/**
+  @options - {
+    log:optional, typically console.log.bind(console)
+  }
+*/
+module.exports = function promiseJavaSpawn(sArgs, options){
   return new Promise((res,rej)=>{
     const dataArray = []
 
@@ -40,24 +45,27 @@ module.exports = function promiseJavaSpawn(sArgs){
       return err
     }
 
-    ls.stdout.on('data', data=>console.log(data.toString()));
-    //ls.stdout.on('data', data=>dataArray.push(data));
-    ls.stderr.on('data', data=>console.log(data.toString()));
-    //ls.stderr.on('data', data=>dataArray.push(data));
+    ls.stdout.on('data', data=>dataArray.push(data));
+    ls.stderr.on('data', data=>dataArray.push(data));
+    ls.stdout.on('error', err=>spawnError=err)
+    ls.stderr.on('error', err=>spawnError=err)
 
-    ls.stdout.on('error', err=>console.log(err))
-    //ls.stdout.on('error', err=>spawnError=err)
-    ls.stderr.on('error', err=>console.log(err))
-    //ls.stderr.on('error', err=>spawnError=err)
+    if(options && options.log){
+      ls.stdout.on('data', data=>options.log(data.toString()));
+      ls.stderr.on('data', data=>options.log(data.toString()));
+      ls.stdout.on('error', err=>options.log(err))
+      ls.stderr.on('error', err=>options.log(err))
+    }
+
 
     ls.on('close', code=>{
       if(spawnError){
         return rej( upgradeError(spawnError) )
       }
 
-      //const output = dataArray.join('')//bring all cli data together
-      //res( output )
-      res()
+      const output = dataArray.join('')//bring all cli data together
+      res( output )
+      //res()
     })
   })
 }

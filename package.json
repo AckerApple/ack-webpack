@@ -9,6 +9,7 @@
     "test:reload": "node ./bin/cli reload test --port 3001",
     "test:production": "node ./bin/cli test/assets/index.js test/assets/index-build.js --production",
     "test:install": "node ./bin/cli install",
+    "test:install:js": "node ./bin/cli install ack-angular-fx",
     "postinstall": "node ./postinstall",
     "ack-webpack": "node ./bin/cli"
   },
@@ -36,7 +37,6 @@
   "devDependencies": {
     "webpack": "^2.2.1"
   },
-  "jsDependencies":{
-    "ack-angular-fx": "^1.0.3"
+  "jsDependencies": {
   }
 }

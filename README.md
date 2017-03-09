@@ -3,20 +3,22 @@ A code bundler that drastically reduces setup time by offering an init prompt of
 
 > NOTE: This package does not depend on webpack and is completely useful without ever installing webpack
 
-Typical 3 Step Process
+Typical a 4 Step Process
 - install
 - init
+- install jsDependencies
 - build or watch your code
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Step One Installation](#step-one-installation)
+- [Installation](#installation)
   - [Optional Global Install](#optional-global-install)
-- [Step Two Initialization](#step-two-initialization)
-- [Step Three Commands](#step-three-commands)
+- [Initialization](#initialization)
+- [Commands](#commands)
   - [Command Options](#command-options)
   - [Time Saver Scripts](#time-saver-scripts)
+- [jsDependencies](#jsDependencies)
 
 ## Overview
 This package greatly reduces common project setup times for the task of bundling javascript code.
@@ -27,7 +29,7 @@ This package greatly reduces common project setup times for the task of bundling
   - Somewhat experimental and needs refinements for more complicated tasks
 - Includes sophisticated CLI install commands to help included jsDependencies that are seperate from devDependencies
 
-## Step One Installation
+## Installation
 Install ack-webpack into your project
 
 ```
@@ -35,7 +37,7 @@ npm install ack-webpack --save-dev
 ```
 > postinstall, one entry will be added into your package.json scripts of "ack-webpack":"ack-webpack" to allow short-hand cli commands
 
-## Step Two Initialization
+## Initialization
 ack-webpack does not operate standing alone, it requires your instructions.
 
 ```
@@ -54,7 +56,7 @@ npm install -g ack-webpack
 ack-webpack init
 ```
 
-## Step Three Commands
+## Commands
 
 Build Example
 ```
@@ -112,4 +114,23 @@ npm run build
 ```
 ```
 npm run watch
+```
+
+## jsDependencies
+To make life easier, ack-webpack params and utilizes a "jsDependencies" key of package.json files
+
+### Install your own jsDependencies
+This will add an entry to your package.json jsDependencies
+
+```
+npm run ack-webpack -- install ack-angular-fx
+```
+
+> Currenty, you cannot specify a version in the install command. Coming soon. Maybe you can make the pull request for this?
+
+### Install All jsDependencies
+Almost like `npm install` but for jsDependencies
+
+```
+npm run ack-webpack -- install ack-angular-fx
 ```

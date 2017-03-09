@@ -44,6 +44,10 @@ class SubInstall{
 
   performInstalls(){
     const installs = this.getInstalls()
+    return this.performInstallsBy(installs)
+  }
+
+  performInstallsBy(installs){
     let promise = Promise.resolve()
     
     for(let x in installs){
@@ -57,6 +61,32 @@ class SubInstall{
 
     return promise
   }
+
+  saveInstallByName(name){
+    return install.promiseVersion(name)
+    .then(version=>{
+      const pack = this.getPack()
+      pack.jsDependencies = pack.jsDependencies || {}
+      pack.jsDependencies[name] = version
+      this.savePack(pack)
+      return this.performInstallsBy(pack.jsDependencies)
+    })
+  }
+
+  savePack(pack){
+    const packPath = this.discoverPackPathBy(this.packPath)
+    const data = JSON.stringify(pack, null, 2)
+    fs.writeFileSync(packPath, data)
+  }
 }
 
-new SubInstall( rootPackPath ).performInstalls().catch(e=>console.error(e))
+const subInstall = new SubInstall( rootPackPath )
+let promise = Promise.resolve()
+
+if(process.argv.length >= 3){
+  promise = promise.then(()=>subInstall.saveInstallByName( process.argv[3] ))
+}else{
+  promise = promise.then(()=>subInstall.performInstalls())
+}
+
+promise.catch(e=>console.error(e))
