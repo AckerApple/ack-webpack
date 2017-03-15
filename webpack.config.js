@@ -6,6 +6,7 @@ const supportBabel = resolver('babel-loader')
 //const supportJson = resolver('json-loader')
 const supportPug = resolver('pug-loader')
 
+//const aot = process.argv.indexOf('--aot')>=0
 const production = process.argv.indexOf('--production')>=0
 const sourceMap = process.argv.indexOf('--skip-source-maps')<0 && !production
 const minify = process.argv.indexOf('--minify')>=0 || production
@@ -32,6 +33,7 @@ const config = {
   plugins: []
 }
 
+
 function resolver(name){
   try{
     return require.resolve(name)
@@ -45,30 +47,56 @@ if(supportPug){
   extensions.push('.jade')
   loaders.push({ test: /\.(jade|pug)$/, loader: "pug-loader" })
   //loaders.push({ test: /\.pug$/, loader: 'pug-static' })
+  //loaders.push({ test: /\.(jade|pug)$/, loaders: ['raw-loader','pug-html-loader'] })
 }
 
 if(supportTs){
-  extensions.push('.ts')
-  //extensions.push('.d.ts')
-  extensions.push('.js')
-  const tsLoader = { test: /\.ts$/,loader: 'ts-loader', options:{} }
-  //const tsLoader = {test: /\.ts$/,loader: 'awesome-typescript-loader'}
-
   //tsconfig file location  
   const projectIndex = process.argv.indexOf('--project')
   const configFileName = null
+  let tsConfigFileName = ''
+  
   if( projectIndex>0 ){
-    tsLoader.options.configFileName = process.argv[projectIndex+1]
+    tsConfigFilePath = process.argv[projectIndex+1]
+  }
+
+  /*
+  if(aot){
+    const ngToolsWebpack = require('@ngtools/webpack');
+    const rootPath = process.cwd()
+    config.plugins.push(
+      new ngToolsWebpack.AotPlugin({
+        tsConfigPath: path.join(rootPath, 'example','tsconfig.aot.json'),//tsConfigFilePath
+        //basePath: path.join(rootPath, 'example'),
+        entryModule: path.join(rootPath, 'example','aot', 'app.module#AppModule')
+        //,mainPath: path.join(rootPath, 'example','aot', 'app.module')
+      })
+    )
+  }*/
+
+  extensions.push('.ts')
+  extensions.push('.js')
+
+  let tsLoader = { test: /\.ts$/,loader: 'ts-loader', options:{} }
+  //let tsLoader = {test: /\.ts$/,loader: 'awesome-typescript-loader'}
+
+  /*if(aot){
+    tsLoader = {
+      test: /\.(ts|tsx)$/,
+      exclude: [/\.(spec|e2e)\.(ts|tsx)$/],
+      loader: '@ngtools/webpack'
+    }
+  }else if(tsConfigFilePath){
+    tsLoader.options.configFileName = tsConfigFilePath
+  }*/
+
+  if(tsConfigFilePath){
+    tsLoader.options.configFileName = tsConfigFilePath
   }
 
   loaders.push(tsLoader)
 }
-/*
-if(supportJson){
-  extensions.push('.json')
-  loaders.push({test: /\.json$/, loader: "json-loader"})
-}
-*/
+
 if(supportBabel){
   extensions.push('.js')
   loaders.push({
@@ -95,17 +123,17 @@ if(sourceMap){
 }
 
 
-if(minify){
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {warnings:false}
-    })
-  )
-}
+/*config.plugins.push(
+  new webpack.DefinePlugin({
+    'process.env': {
+      'ENV': 'production'
+    }
+  })
+)*/
 
-if(production) {
+if(production || minify) {
   config.plugins.push(new webpack.optimize.DedupePlugin());
-  config.plugins.push(new webpack.NoErrorsPlugin());
+  //config.plugins.push(new webpack.NoErrorsPlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     // beautify: true, //debug
     // mangle: false, //debug
@@ -121,8 +149,7 @@ if(production) {
     // }, // debug
     // comments: true, //debug
     beautify: false, //prod
-    mangle: false, //prod
-    //mangle: { screw_ie8 : true }, //prod
+    mangle: { screw_ie8 : true }, //prod
     compress: { screw_ie8: true }, //prod
     comments: false //prod
   }));

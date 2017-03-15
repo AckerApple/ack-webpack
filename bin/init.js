@@ -21,7 +21,7 @@ function runPrompts(){
 
 function runBooleanPrompts(){
   return promisePrompt([{
-    description:'Do you wish to intall webpack?',
+    description:'Intall webpack?',
     name:'useWebpack',
     default:'yes'
   }/*,{
@@ -29,11 +29,11 @@ function runBooleanPrompts(){
     name:'useJson',
     default:'yes'
   }*/,{
-    description:'Do you wish to enable PUG/JADE template-file import?',
+    description:'Enable PUG/JADE template-file import?',
     name:'usePug',
     default:'yes'
   },{
-    description:'Do you wish to use a transpiler?',
+    description:'Using a transpiler?',
     name:'useTran',
     default:'yes'
   }])
@@ -89,7 +89,7 @@ function runTransPrompt(){
     Object.assign(config, results)
     return config
   })
-  /*
+  /* Decide if we want @ngtools/webpack and/or tsconfig file pathing
   .then(()=>{
     if(config.transpiler.toLowerCase()=='typescript'){
       return runTypescriptPrompt()
@@ -99,8 +99,7 @@ function runTransPrompt(){
     if(tResults)Object.assign(config, tResults)
 
     return config
-  })
-  */
+  })*/
 }
 
 function processTranPrompt(results){
@@ -110,16 +109,26 @@ function processTranPrompt(results){
   }
 }
 
-/*function runTypescriptPrompt(){
+function runTypescriptPrompt(){
   return promisePrompt([{
+    description:'Install @ngtools/webpack for AoT Support',
+    name:'ngToolsWebpack',
+    default:'yes'
+  },{
     description:'Typescript index path',
     name:'indexPath',
     default:'index.ts'
   }])
-}*/
+}
 
 function installTypescript(options){
-  return installPacks(typesPacks).then(()=>paramTsConfig(options))
+  let promise = installPacks(typesPacks).then(()=>paramTsConfig(options))
+
+  /*if(options.ngToolsWebpack){
+    promise.then(()=>install('@ngtools/webpack'))
+  }*/
+
+  return promise
 }
 
 function getTsConfigPath(){
