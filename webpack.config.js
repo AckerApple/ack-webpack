@@ -13,6 +13,7 @@ const minify = process.argv.indexOf('--minify')>=0 || production
 
 const extensions = ['.webpack.js', '.web.js']
 const loaders = []
+let tsConfigFilePath = ''
 
 /*function root(args) {
   args = Array.prototype.slice.call(arguments, 0);
