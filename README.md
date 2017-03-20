@@ -32,7 +32,7 @@ This package greatly reduces common project setup times for the task of bundling
 ## Installation
 Install ack-webpack into your project
 
-```
+```bash
 npm install ack-webpack --save-dev
 ```
 > postinstall, one entry will be added into your package.json scripts of "ack-webpack":"ack-webpack" to allow short-hand cli commands
@@ -40,7 +40,7 @@ npm install ack-webpack --save-dev
 ## Initialization
 ack-webpack does not operate standing alone, it requires your instructions.
 
-```
+```bash
 npm run ack-webpack -- init
 ```
 > The above command works because during postinstall of ack-webpack, a script entry was added to your package.json
@@ -48,38 +48,38 @@ npm run ack-webpack -- init
 #### Optional Global Install
 It's possible to make your commands even shorter by installing ack-webpack globally
 
-```
+```bash
 npm install -g ack-webpack
 ```
 > If you did install ack-webpack globally, your init now looks as follows
-```
+```bash
 ack-webpack init
 ```
 
 ## Commands
 
 Build Example
-```
+```bash
 npm run ack-webpack -- app/index.js www/app.js --production
 ```
 
 Build Example 2. Same Above Example, using Global Installation
-```
+```bash
 ack-webpack app/index.js www/app.js --production
 ```
 
 Build, Watch Code, and Reload Browser Example
-```
+```bash
 ack-webpack app/index.js www/app.js --watch --browser=www/
 ```
 
 Browser Test Example
-```
+```bash
 ack-webpack reload www
 ```
 
 Build. After Build, Show in Browser Example
-```
+```bash
 ack-webpack app/index.js www/app.js --production --browser
 ```
 
@@ -98,7 +98,7 @@ ack-webpack app/index.js www/app.js --production --browser
 Add these recommended entries into your package.json scripts to save yourself sometime
 
 package.json convenience scripts
-```
+```javascript
 {
   "scripts":{
     "start": "ack-webpack reload src-path",
@@ -109,10 +109,10 @@ package.json convenience scripts
 ```
 
 Now you can simply just run the following commands
-```
+```bash
 npm run build
 ```
-```
+```bash
 npm run watch
 ```
 
@@ -122,18 +122,24 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
 ### Install your own jsDependencies
 This will add an entry to your package.json jsDependencies
 
-```
+```bash
 npm run ack-webpack -- install ack-angular-fx
 ```
 
 Compound Installs
-```
+```bash
 npm run ack-webpack -- install ack-x ack-angular-fx@^1.03 ack-p
 ```
+
+Lock subsequent jsDependencies by having them written into your main package.json.jsDependencies
+```bash
+npm run ack-webpack -- install ack-angular-fx --lock
+```
+
 
 ### Install All jsDependencies
 Almost like `npm install` but for jsDependencies
 
-```
+```bash
 npm run ack-webpack -- install ack-angular-fx
 ```

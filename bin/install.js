@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 const fs = require('fs')
 const path = require('path')
+const log = require('../log.function')
 const install = require('../install.function')
 const rootPackPath = process.cwd()
 
 class SubInstall{
-  constructor(packPath){
+  constructor(packPath, config={originalPackage:null, lock:false}){
     this.packPath = packPath
+    this.config = config
   }
 
   discoverPackPathBy(pathing, original){
@@ -23,6 +25,10 @@ class SubInstall{
     return this.discoverPackPathBy( path.join(pathing,'../'), original )
   }
 
+  isLockMode(){
+    return process.argv.indexOf('--lock')>=0
+  }
+
   getDepKey(){
     const depKeyArgIndex = process.argv.indexOf('--depkey')
     
@@ -33,9 +39,13 @@ class SubInstall{
     return 'jsDependencies'
   }
 
+  getPackPath(){
+    return this.discoverPackPathBy(this.packPath)
+  }
+
   getPack(){
-    const packPath = this.discoverPackPathBy(this.packPath)
-    return JSON.parse( fs.readFileSync( packPath ).toString() )
+    if( this.packageJson )return this.packageJson;
+    return this.packageJson = JSON.parse( fs.readFileSync( this.getPackPath() ).toString() )
   }
 
   getInstalls(){
@@ -43,52 +53,66 @@ class SubInstall{
   }
 
   performInstalls(){
-    const installs = this.getInstalls()
-    return this.performInstallsBy(installs)
+    return this.performInstallsBy( this.getInstalls() )
   }
 
   performInstallsBy(installs){
     let promise = Promise.resolve()
-    
-    for(let x in installs){
-      let installDef = x+'@'+installs[x]
+
+    if(!installs)return promise
+
+    Object.keys(installs).forEach(name=>{
+      let installDef = name+'@'+installs[name]
+      
       promise = promise.then(()=>install(installDef))
-      .then(()=>{
-        const subPackPath = require.resolve(x)
-        return new SubInstall(subPackPath).performInstalls()
-      })
-    }
+      .then( config=>this.saveName(name, installs[name]) )
+      .then( ()=>new SubInstall( require.resolve(name), this.config) )
+      .then( SubInstall=>SubInstall.performInstalls() )
+    })
 
     return promise
   }
 
+  saveName(name, version){
+    if(this.config.lock && !this.config.originalPackage)return name
+    this.config.originalPackage[ this.getDepKey() ][ name ] = version
+    return name
+  }
+
   saveInstallByName(name){
     const vSplit = name.split('/').pop().split('@')
+    let nameOnly = []
     
     if(vSplit.length>1){
-      const nameOnly = name.split('@')
+      nameOnly = name.split('@')
       nameOnly.pop()
 
       let version = vSplit.pop()
       return this.saveInstallBy(nameOnly.join('@'), version)
     }
 
+    //non-npm install
+    if( name.search(/^[^:]+:/)>=0 ){
+      nameOnly = name.split('/')
+      return this.saveInstallBy(nameOnly.pop(), name, name)
+    }
+
     return install.promiseVersion(name)
-    .then(version=>this.saveInstallBy(name,version))
+    .then(version=>this.saveInstallBy(name,name,version))
   }
 
-  saveInstallBy(name, version){
+  saveInstallBy(name, install, version){
     const pack = this.getPack()
     pack.jsDependencies = pack.jsDependencies || {}
-    pack.jsDependencies[name] = version
-    this.savePack(pack)
+    pack.jsDependencies[ name ] = (version || name)
     
     const installDef = {}
     installDef[name] = version
-    return this.performInstallsBy(installDef)
+    return this.performInstallsBy( installDef )
   }
 
   savePack(pack){
+    pack = pack || this.getPack()
     const packPath = this.discoverPackPathBy(this.packPath)
     const data = JSON.stringify(pack, null, 2)
     fs.writeFileSync(packPath, data)
@@ -99,12 +123,17 @@ const subInstall = new SubInstall( rootPackPath )
 let promise = Promise.resolve()
 
 if(process.argv.length > 3){
+  log('Reading Package', subInstall.getPackPath())
+  subInstall.config.lock = process.argv.indexOf('--lock')>=0
+  subInstall.config.originalPackage = subInstall.getPack()
+
   for(let x=3; x < process.argv.length; ++x){
     if(process.argv[x].substring(0, 2)=='--')break;
-    promise = promise.then(()=>subInstall.saveInstallByName( process.argv[x] ))
+    promise = promise.then( ()=>subInstall.saveInstallByName(process.argv[x]) )
   }
-}else{
-  promise = promise.then(()=>subInstall.performInstalls())
+  promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
+}else{  
+  promise = promise.then( ()=>subInstall.performInstalls() )
 }
 
-promise.catch(e=>console.error(e))
+promise.catch( e=>log.error(e) )

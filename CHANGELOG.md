@@ -1,10 +1,15 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.18] - 2017-03-20
+### Added
+- lock option for cli install
+- docs
+
 ## [1.1.7] - 2017-03-15
-# Enhanced
+### Enhanced
 - screw IE8 for better compression
-# Fixed
+### Fixed
 - modified webpack.config.js as production mode was failing
 
 ## [1.1.16] - 2017-03-09
