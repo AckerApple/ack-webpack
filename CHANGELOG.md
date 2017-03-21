@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.21] - 2017-03-21
+### Added
+- Ability to specify install output location via --out cli option
+
 ## [1.1.18] - 2017-03-20
 ### Added
 - lock option for cli install

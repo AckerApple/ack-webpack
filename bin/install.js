@@ -1,9 +1,16 @@
 #!/usr/bin/env node
+const ackPath = require('ack-path')
 const fs = require('fs')
 const path = require('path')
 const log = require('../log.function')
 const install = require('../install.function')
 const rootPackPath = process.cwd()
+
+let out = ''
+const outArgIndex = process.argv.indexOf('--out')
+if(outArgIndex>=0){
+  out = process.argv[ outArgIndex+1 ]
+}
 
 class SubInstall{
   constructor(packPath, config={originalPackage:null, lock:false}){
@@ -61,16 +68,17 @@ class SubInstall{
 
     if(!installs)return promise
 
+    const installArray = []
     Object.keys(installs).forEach(name=>{
       let installDef = name+'@'+installs[name]
-      
-      promise = promise.then(()=>install(installDef))
-      .then( config=>this.saveName(name, installs[name]) )
-      .then( ()=>new SubInstall( require.resolve(name), this.config) )
+      installArray.push( installDef )
+      this.saveName(name, installs[name])
+
+      promise = promise.then( ()=>new SubInstall( require.resolve(name), this.config) )
       .then( SubInstall=>SubInstall.performInstalls() )
     })
 
-    return promise
+    return install(installArray.join(' '),this.config)
   }
 
   saveName(name, version){
@@ -90,7 +98,7 @@ class SubInstall{
       nameOnly.pop()
 
       let version = vSplit.pop()
-      return this.saveInstallBy(nameOnly.join('@'), version)
+      return this.saveInstallBy(nameOnly.join('@'), name, version)
     }
 
     //non-npm install
@@ -125,17 +133,38 @@ const subInstall = new SubInstall( rootPackPath )
 let promise = Promise.resolve()
 log('Reading Package', subInstall.getPackPath())
 
-if(process.argv.length > 3){
+const RootPath = ackPath(rootPackPath).join('.ack-webpack-temp')
+if(out){
+  subInstall.config.prefix = './.ack-webpack-temp'
+  promise = promise.then( ()=>RootPath.param() )
+  promise = promise.then( ()=>RootPath.File('package.json').param('{"description":"...", "repository":"...", "license":"UNLICENSED"}') )
+}
+
+const requestedInstalls = []
+
+for(let x=3; x < process.argv.length; ++x){
+  if(process.argv[x].substring(0, 2)=='--')break;
+  requestedInstalls.push( process.argv[x] )
+}
+
+if( requestedInstalls.length ){
   subInstall.config.lock = process.argv.indexOf('--lock')>=0
   subInstall.config.originalPackage = subInstall.getPack()
-
-  for(let x=3; x < process.argv.length; ++x){
-    if(process.argv[x].substring(0, 2)=='--')break;
-    promise = promise.then( ()=>subInstall.saveInstallByName(process.argv[x]) )
+  for(let x=0; x < requestedInstalls.length; ++x){
+    promise = promise.then( ()=>subInstall.saveInstallByName(requestedInstalls[x]) )
   }
+
   promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
 }else{  
   promise = promise.then( ()=>subInstall.performInstalls() )
+}
+
+if(out){
+  const MoveTo = ackPath(rootPackPath).join(out)
+  promise = promise
+  .then( ()=>MoveTo.param() )
+  .then( ()=>RootPath.Join('node_modules').moveTo(MoveTo.path,true) )
+  .then( ()=>RootPath.delete() )
 }
 
 promise.catch( e=>log.error(e) )

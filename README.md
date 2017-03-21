@@ -136,6 +136,12 @@ Lock subsequent jsDependencies by having them written into your main package.jso
 npm run ack-webpack -- install ack-angular-fx --lock
 ```
 
+### Change Install Path
+There are times the node_modules folder is not enough. And when using Angular2 compiler-cli with AoT, the node_modules folder must not be used.
+
+```bash
+npm run ack-webpack -- install --out js_modules
+```
 
 ### Install All jsDependencies
 Almost like `npm install` but for jsDependencies
