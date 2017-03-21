@@ -69,24 +69,27 @@ class SubInstall{
     if(!installs)return promise
 
 //    const installArray = []
+//    const subInstalls = []
     Object.keys(installs).forEach(name=>{
       let installDef = name+'@'+installs[name]
+      const resolvePath = path.join(process.cwd(), this.config.prefix, 'node_modules',name)
 
       promise = promise.then( ()=>install(installDef, this.config) )
       .then( config=>this.saveName(name, installs[name]) )
-      .then( ()=>new SubInstall( require.resolve(name), this.config) )
+      .then( ()=>new SubInstall( require.resolve(resolvePath), this.config) )
       .then( SubInstall=>SubInstall.performInstalls() )
 /*
       installArray.push( installDef )
       this.saveName(name, installs[name])
-
       promise = promise.then( ()=>install(name,this.config) )
-      promise.then( ()=>new SubInstall( require.resolve(name), this.config) )
-      .then( SubInstall=>SubInstall.performInstalls() )
+      promise.then( ()=>subInstalls.push(new SubInstall( require.resolve(name), this.config)) )
 */
     })
-
-    //return install(installArray.join(' '),this.config)
+/*
+    return install(installArray.join(' '),this.config)
+    .then( ()=>subInstalls.map(SubInstall=>SubInstall.performInstalls()) )
+    .then( promises=>Promise.all(promises) )
+*/
     return promise
   }
 
