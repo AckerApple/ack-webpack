@@ -74,7 +74,9 @@ class SubInstall{
   }
 
   saveName(name, version){
-    if(this.config.lock && !this.config.originalPackage)return name
+    if(!this.config.lock || !this.config.originalPackage){
+      return name
+    }
     this.config.originalPackage[ this.getDepKey() ][ name ] = version
     return name
   }
@@ -121,9 +123,9 @@ class SubInstall{
 
 const subInstall = new SubInstall( rootPackPath )
 let promise = Promise.resolve()
+log('Reading Package', subInstall.getPackPath())
 
 if(process.argv.length > 3){
-  log('Reading Package', subInstall.getPackPath())
   subInstall.config.lock = process.argv.indexOf('--lock')>=0
   subInstall.config.originalPackage = subInstall.getPack()
 
