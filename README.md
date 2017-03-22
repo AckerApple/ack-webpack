@@ -20,6 +20,7 @@ A 4 Step Process
     - [Compile Command Options](#compile-command-options)
   - [Install Commands](#install-commands)
     - [Install Command Options](#install-command-options)
+    - [install:js](#installjs)
   - [Time Saver Scripts](#time-saver-scripts)
 
 ## Overview
@@ -127,6 +128,14 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
   - writes all sub-package jsDependencies into your package.json file jsDependencies as if they were direct dependencies of current project
 - **depkey** = jsDependencies
 
+### install:js
+Create, read, and write `js_modules` jsDependencies a lot like `node_modules` devDependencies
+
+The following will read jsDependencies in package.json and install them into a folder js_modules
+```bash
+npm run ack-webpack -- install:js
+```
+
 #### Install your own jsDependencies
 Similar to `npm install` but reads/writes **jsDependencies** instead of devDependencies or dependencies.
 
@@ -170,8 +179,8 @@ package.json convenience scripts
     "start": "ack-webpack reload src-path",
     "build": "ack-webpack src-path/index.js www/index.js --production",
     "watch": "ack-webpack src-path/index.js www/index.js --watch --browser=www/",
-    "install:js": "ack-webpack install",
-    "install:ts": "ack-webpack install --out js_modules"
+    "install:jsDependencies": "ack-webpack install",
+    "install:js": "ack-webpack install:js"
   }
 }
 ```
