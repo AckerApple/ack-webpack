@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.24] - 2017-03-22
+### Added
+- modules argument for compiling
+
 ## [1.1.21] - 2017-03-21
 ### Added
 - Ability to specify install output location via --out cli option

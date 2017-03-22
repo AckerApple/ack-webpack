@@ -21,11 +21,18 @@ let tsConfigFilePath = ''
   console.log('rooter',rooter)
   return rooter
 }*/
+const modules = ["node_modules"]
+const moduleArgIndex = process.argv.indexOf('--modules')
+if(moduleArgIndex>=0){
+  const modulesArg = process.argv[ moduleArgIndex+1 ].split(',')
+  Array.prototype.push.apply(modules, modulesArg)
+}
 
 const config = {
   bail:true,
   //context: root(),
   resolve: {
+    modules: modules,
     extensions: extensions
   },
   module:{
