@@ -7,7 +7,10 @@ switch(firstArg){
 
   case 'reload':require('./reload');break
 
-  case 'install':require('./install');break
+  case 'install':require('./install').exec(process.argv);break
+  case 'install:js':
+    require('./install').exec([...process.argv,'--out','js_modules']);
+  break
 
   default:runWebpacker()
 }

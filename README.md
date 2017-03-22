@@ -125,8 +125,9 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
   - Commonly set to **js_modules** when overcoming restrictions/limitations or other like issues with targeting node_modules folder
 - **lock**
   - writes all sub-package jsDependencies into your package.json file jsDependencies as if they were direct dependencies of current project
+- **depkey** = jsDependencies
 
-### Install your own jsDependencies
+#### Install your own jsDependencies
 Similar to `npm install` but reads/writes **jsDependencies** instead of devDependencies or dependencies.
 
 Example: Install ack-angular-fx
@@ -145,7 +146,7 @@ Lock subsequent jsDependencies by having them written into your main package.jso
 npm run ack-webpack -- install ack-angular-fx --lock
 ```
 
-### Change Install Path
+#### Change Install Path
 There are times the node_modules folder is not enough. And when using Angular2 compiler-cli with AoT, the node_modules folder must not be used.
 
 ```bash
@@ -159,7 +160,7 @@ Almost like `npm install` but for jsDependencies
 npm run ack-webpack -- install ack-angular-fx
 ```
 
-#### Time Saver Scripts
+### Time Saver Scripts
 Add these recommended entries into your package.json scripts to save yourself sometime
 
 package.json convenience scripts

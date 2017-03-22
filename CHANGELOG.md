@@ -1,9 +1,11 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.1.24] - 2017-03-22
+## [1.1.25] - 2017-03-22
 ### Added
 - modules argument for compiling
+- install:js
+- more logically sound install --out folder processing
 
 ## [1.1.21] - 2017-03-21
 ### Added

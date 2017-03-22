@@ -1,16 +1,11 @@
 #!/usr/bin/env node
 const ackPath = require('ack-path')
+const ackP = require('ack-p')
 const fs = require('fs')
 const path = require('path')
 const log = require('../log.function')
 const install = require('../install.function')
 const rootPackPath = process.cwd()
-
-let out = ''
-const outArgIndex = process.argv.indexOf('--out')
-if(outArgIndex>=0){
-  out = process.argv[ outArgIndex+1 ]
-}
 
 class SubInstall{
   constructor(packPath, config={originalPackage:null, lock:false}){
@@ -33,17 +28,11 @@ class SubInstall{
   }
 
   isLockMode(){
-    return process.argv.indexOf('--lock')>=0
+    return this.config.lock
   }
 
   getDepKey(){
-    const depKeyArgIndex = process.argv.indexOf('--depkey')
-    
-    if(depKeyArgIndex>0){
-      return process.argv[depKeyArgIndex+1]
-    }
-
-    return 'jsDependencies'
+    return this.config.depKey || 'jsDependencies'
   }
 
   getPackPath(){
@@ -141,42 +130,67 @@ class SubInstall{
   }
 }
 
-const subInstall = new SubInstall( rootPackPath )
-let promise = Promise.resolve()
-log('Reading Package', subInstall.getPackPath())
+module.exports.exec = function(args){
+  args = args || process.argv
 
-const RootPath = ackPath(rootPackPath).join('.ack-webpack-temp')
-if(out){
-  subInstall.config.prefix = './.ack-webpack-temp'
-  promise = promise.then( ()=>RootPath.param() )
-  promise = promise.then( ()=>RootPath.File('package.json').param('{"description":"...", "repository":"...", "license":"UNLICENSED"}') )
-}
+  const subInstall = new SubInstall( rootPackPath )
+  let promise = ackP.resolve()
+  log('Reading Package', subInstall.getPackPath())
 
-const requestedInstalls = []
-
-for(let x=3; x < process.argv.length; ++x){
-  if(process.argv[x].substring(0, 2)=='--')break;
-  requestedInstalls.push( process.argv[x] )
-}
-
-if( requestedInstalls.length ){
-  subInstall.config.lock = process.argv.indexOf('--lock')>=0
-  subInstall.config.originalPackage = subInstall.getPack()
-  for(let x=0; x < requestedInstalls.length; ++x){
-    promise = promise.then( ()=>subInstall.saveInstallByName(requestedInstalls[x]) )
+  if(args.indexOf('--lock')>=0){
+    subInstall.config.lock = true
   }
 
-  promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
-}else{  
-  promise = promise.then( ()=>subInstall.performInstalls() )
-}
+  const depKeyArgIndex = args.indexOf('--depkey')
+  if(depKeyArgIndex>0){
+    subInstall.config.depKey = args[ depKeyArgIndex+1 ]
+  }
 
-if(out){
+  let out = ''
+  const outArgIndex = args.indexOf('--out')
+  if(outArgIndex>=0){
+    out = args[ outArgIndex+1 ]
+  }
+  
+  const RootPath = ackPath(rootPackPath).join('.ack-webpack-temp')
   const MoveTo = ackPath(rootPackPath).join(out)
-  promise = promise
-  .then( ()=>MoveTo.param() )
-  .then( ()=>RootPath.Join('node_modules').moveTo(MoveTo.path,true) )
-  .then( ()=>RootPath.delete() )
-}
+  
+  if(out){
+    subInstall.config.prefix = './.ack-webpack-temp'
+    const fooPack = '{"description":"...", "repository":"...", "license":"UNLICENSED"}'
+    const TempNodeModules = RootPath.Join('node_modules')
 
-promise.catch( e=>log.error(e) )
+    promise = promise.then( ()=>RootPath.param() )
+    .then( ()=>RootPath.File('package.json').param(fooPack) )
+    .then( ()=>MoveTo.moveTo( TempNodeModules ) )//maybe install folder exists?
+    .catch('ENOENT', e=>null)
+  }
+
+  const requestedInstalls = []
+
+  for(let x=3; x < args.length; ++x){
+    if(args[x].substring(0, 2)=='--')break;
+    requestedInstalls.push( args[x] )
+  }
+
+  if( requestedInstalls.length ){
+    subInstall.config.lock = args.indexOf('--lock')>=0
+    subInstall.config.originalPackage = subInstall.getPack()
+    for(let x=0; x < requestedInstalls.length; ++x){
+      promise = promise.then( ()=>subInstall.saveInstallByName(requestedInstalls[x]) )
+    }
+
+    promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
+  }else{  
+    promise = promise.then( ()=>subInstall.performInstalls() )
+  }
+
+  if(out){
+    promise = promise
+    .then( ()=>MoveTo.param() )
+    .then( ()=>RootPath.Join('node_modules').moveTo(MoveTo.path,true) )
+    .then( ()=>RootPath.delete() )
+  }
+
+  promise.catch( e=>log.error(e) )
+}
