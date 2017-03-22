@@ -180,7 +180,9 @@ module.exports.exec = function(args){
       promise = promise.then( ()=>subInstall.saveInstallByName(requestedInstalls[x]) )
     }
 
-    promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
+    if( args.indexOf('--no-save')<0 ){
+      promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
+    }
   }else{  
     promise = promise.then( ()=>subInstall.performInstalls() )
   }

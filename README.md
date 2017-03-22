@@ -127,6 +127,8 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
 - **lock**
   - writes all sub-package jsDependencies into your package.json file jsDependencies as if they were direct dependencies of current project
 - **depkey** = jsDependencies
+- **no-save**
+  - Prevent ack-webpack from auto adding installs as jsDependencies
 
 ### install:js
 Create, read, and write `js_modules` jsDependencies a lot like `node_modules` devDependencies
