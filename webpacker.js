@@ -105,6 +105,7 @@ function watchCompiler(compiler, options={}){
   options.onRebuild = options.onRebuild || function(){}
 
   return new Promise(function(res,rej){  
+    //webpack watch functionality
     compiler.watch(watchConfig, function(err,stats){
       if(err)return rej(err)
 

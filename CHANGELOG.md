@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.27] - 2017-03-28
+### Fixed
+- modules relative path pointing
+
 ## [1.1.26] - 2017-03-22
 ### Added
 - modules argument for compiling

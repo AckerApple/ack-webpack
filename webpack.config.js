@@ -21,15 +21,18 @@ let tsConfigFilePath = ''
   console.log('rooter',rooter)
   return rooter
 }*/
-const modules = ["node_modules"]
+const cwd = process.cwd()
+const modules = [ path.join(cwd, "node_modules") ]
 const moduleArgIndex = process.argv.indexOf('--modules')
 if(moduleArgIndex>=0){
   const modulesArg = process.argv[ moduleArgIndex+1 ].split(',')
-  Array.prototype.push.apply(modules, modulesArg)
+  const absModules = modulesArg.map( relativePath=>path.join(cwd, relativePath) )
+  Array.prototype.unshift.apply(modules, absModules)
 }
 
 const config = {
   bail:true,
+  //watch:true,//ack-webpack uses reload to facilitate this
   //context: root(),
   resolve: {
     modules: modules,
