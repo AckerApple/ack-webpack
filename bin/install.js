@@ -61,7 +61,14 @@ class SubInstall{
 //    const subInstalls = []
     Object.keys(installs).forEach(name=>{
       let installDef = name+'@'+installs[name]
-      const resolvePath = path.join(process.cwd(), this.config.prefix, 'node_modules',name)
+
+      let resolvePath = ''
+
+      if(this.config.prefix){
+        resolvePath = path.join(process.cwd(), this.config.prefix, 'node_modules', name)
+      }else{
+        resolvePath = path.join(process.cwd(), 'node_modules', name)
+      }
 
       promise = promise.then( ()=>install(installDef, this.config) )
       .then( config=>this.saveName(name, installs[name]) )
