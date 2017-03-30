@@ -131,6 +131,9 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
   - Prevent ack-webpack from auto adding installs as jsDependencies
 
 ### install:js
+
+> Experimental. This was created during Angular2 AoT compiling issues but those problems have been solved. I, Acker Apple, no longer use this technique.
+
 Create, read, and write `js_modules` jsDependencies a lot like `node_modules` devDependencies
 
 The following will read jsDependencies in package.json and install them into a folder js_modules
@@ -158,7 +161,8 @@ npm run ack-webpack -- install ack-angular-fx --lock
 ```
 
 #### Change Install Path
-There are times the node_modules folder is not enough. And when using Angular2 compiler-cli with AoT, the node_modules folder must not be used.
+
+> Experimental. This was created during Angular2 AoT compiling issues but those problems have been solved. I, Acker Apple, no longer use this technique.
 
 ```bash
 npm run ack-webpack -- install --out js_modules
@@ -168,7 +172,7 @@ npm run ack-webpack -- install --out js_modules
 Almost like `npm install` but for jsDependencies
 
 ```bash
-npm run ack-webpack -- install ack-angular-fx
+npm run ack-webpack -- install
 ```
 
 ### Time Saver Scripts
