@@ -125,7 +125,7 @@ function installTypescript(options){
   let promise = installPacks(typesPacks).then(()=>paramTsConfig(options))
 
   /*if(options.ngToolsWebpack){
-    promise.then(()=>install('@ngtools/webpack'))
+    promise.then(()=>installer('@ngtools/webpack'))
   }*/
 
   return promise
@@ -171,11 +171,11 @@ function installWebpack(){
 
 function installPacks(packs){
   let promise = Promise.resolve()
-  packs.forEach( pack=>promise=promise.then(()=>install(pack)) )
+  packs.forEach( pack=>promise=promise.then(()=>installer(pack)) )
   return promise
 }
 
-function install(name){
+function installer(name){
   const args = ['npm','install',name,'--save-dev']
   log('$',args.join(' '))
   return promiseSpawn(args)
