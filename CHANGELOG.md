@@ -1,6 +1,9 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.31] - 2017-04-17
+### Fixed port cli argument
+
 ## [1.1.27] - 2017-03-28
 ### Fixed
 - modules relative path pointing
