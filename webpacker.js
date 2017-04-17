@@ -28,9 +28,9 @@ module.exports = function(fromPath, outPath){
     }
   })
   
-  const portArgIndex = process.argv.indexOf('--port')>0
+  const portArgIndex = process.argv.indexOf('--port')
   let port = 3000
-  if(portArgIndex>0){
+  if(portArgIndex>=0){
     port = Number( process.argv[portArgIndex+1] )
   }
 
