@@ -101,7 +101,7 @@ function processBooleanPrompts(results){
   }
 
   if(tsOptions.paramTsConfig){
-    promise = promise.then( ()=>paramTsConfig(appRoot) )
+    promise = promise.then( ()=>paramTsConfig(appRoot, tsOptions) )
   }
 
   if(tsOptions.paramTsAotConfig){
@@ -187,7 +187,8 @@ function paramTsConfig(appRoot, options){
   if(exists)return
   const config = tsConfig
   if(options && options.createTypings){
-    config.files = ['typings.d.ts']
+    config.files = config.files || []
+    config.files.push('typings.d.ts')
   }
   fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
   log('created',filePath)
@@ -199,7 +200,8 @@ function paramTsAotConfig(appRoot, options){
   if(exists)return
   const config = tsAotConfig
   if(options && options.createTypings){
-    config.files = ['typings.d.ts']
+    config.files = config.files || []
+    config.files.push('typings.d.ts')
   }
   fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
   log('created',filePath)

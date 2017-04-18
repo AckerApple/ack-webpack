@@ -11,13 +11,6 @@
     "noEmitHelpers": false,
     "allowJs": true,
     "noImplicitAny": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "outDir": "aot"
-  },
-  "files":["src/app.module.ts"],
-  "angularCompilerOptions": {
-    "genDir": "aot",
-    "skipMetadataEmit" : true,
-    "entryModule": "app.module#AppModule"
+    "suppressImplicitAnyIndexErrors": true
   }
 }
