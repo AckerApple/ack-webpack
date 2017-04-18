@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "experimentalDecorators": true,
-
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
     "inlineSources": true,
     "emitDecoratorMetadata": true,
+    "baseUrl": ".",
     "experimentalDecorators": true,
-    "noEmitHelpers": false
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "noEmitHelpers": false,
+    "allowJs": true,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true
+  }
 }

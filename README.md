@@ -21,6 +21,8 @@ A 4 Step Process
   - [Install Commands](#install-commands)
     - [Install Command Options](#install-command-options)
     - [install:js](#installjs)
+  - [Project Init Commands](#project-init-commands)
+    - [init:angular](#initangular)
   - [Time Saver Scripts](#time-saver-scripts)
 
 ## Overview
@@ -132,13 +134,23 @@ To make life easier, ack-webpack params and utilizes a "jsDependencies" key of p
 
 ### install:js
 
-> Experimental. This was created during Angular2 AoT compiling issues but those problems have been solved. I, Acker Apple, no longer use this technique.
+> EXPERIMENTAL . This was created during Angular2 AoT compiling issues but those problems have been solved. I, Acker Apple, no longer use this technique.
 
 Create, read, and write `js_modules` jsDependencies a lot like `node_modules` devDependencies
 
 The following will read jsDependencies in package.json and install them into a folder js_modules
 ```bash
 npm run ack-webpack -- install:js
+```
+
+## Project Init Commands
+Depending on what project you are starting, the following project commands can save you time
+
+### init:angular
+A series of questions will help lead to a faster Angular project bootup
+
+```
+npm run ack-webpack -- init:angular
 ```
 
 #### Install your own jsDependencies

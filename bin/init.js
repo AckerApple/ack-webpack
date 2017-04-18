@@ -12,7 +12,7 @@ const webPacks = ['webpack']
 
 const promisePrompt = require('../promisePrompt.function')
 
-const tsConfig = require('./tsconfig.es5.json')
+//const tsConfig = require('./tsconfig.es5.json')
 
 function runPrompts(){
   return runBooleanPrompts()
@@ -122,7 +122,7 @@ function runTypescriptPrompt(){
 }
 
 function installTypescript(options){
-  let promise = installPacks(typesPacks).then(()=>paramTsConfig(options))
+  let promise = installPacks(typesPacks)//.then(()=>paramTsConfig(options))
 
   /*if(options.ngToolsWebpack){
     promise.then(()=>installer('@ngtools/webpack'))
@@ -131,7 +131,7 @@ function installTypescript(options){
   return promise
 }
 
-function getTsConfigPath(){
+/*function getTsConfigPath(){
   return path.join(process.cwd(),'tsconfig.json')
 }
 
@@ -151,7 +151,7 @@ function createTsConfig(options={}){
     })
   })
   .then(()=>log("ack-webpack: created tsconfig.json"))
-}
+}*/
 
 function installBabel(){
   return installPacks(babelPacks)

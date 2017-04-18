@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.1.31",
+  "version": "1.1.32",
   "description": "A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.",
   "main": "webpack.config.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "test:install:multi-dep-out": "node ./bin/cli install ack-angular-fx@^1.0.3 ack-x ack-p --out test/results/js_modules",
     "test:install:out": "node ./bin/cli install --out test/results/js_modules",
     "test:install:js": "node ./bin/cli install:js",
+    "test:init:angular": "node ./bin/cli init:angular",
     "postinstall": "node ./postinstall",
     "ack-webpack": "node ./bin/cli"
   },
@@ -38,13 +39,5 @@
   "dependencies": {
     "ack-path": "^1.5.5",
     "reload": "github:ackerapple/reload"
-  },
-  "devDependencies": {
-    "webpack": "^2.2.1"
-  },
-  "jsDependencies": {
-    "ack-angular-fx": "^1.0.3",
-    "ack-x": "1.2.22",
-    "ack-p": "1.0.12"
   }
 }
