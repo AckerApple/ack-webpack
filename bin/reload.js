@@ -1,4 +1,4 @@
-const reload = require('reload')
+const reload = require('ack-reload')
 const log = require('../log.function')
 const options = {
   log:log, html5Mode:process.argv.indexOf('--html5Mode')>=0

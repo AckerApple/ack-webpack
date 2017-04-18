@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const log = require("./log.function");
 const staticConfig = require('./webpack.config')
 
-const reload = require('reload')
+const reload = require('ack-reload')
 
 /** uses process args to determin port and if to watch */
 module.exports = function(fromPath, outPath){
