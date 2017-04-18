@@ -71,6 +71,7 @@ module.exports = function(fromPath, outPath){
       message:'[ack-webpack]',
       log:log,
       port:port,
+      html5Mode:process.argv.indexOf('--html5Mode')>=0
       //ignoreDotFiles:true,
       /*
       filter:function(pathTo,stat){

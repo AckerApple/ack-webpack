@@ -1,10 +1,11 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-## [1.1.34] - 2017-04-17
+## [1.1.35] - 2017-04-17
 ### Added
 - npm run -- ack-webpack init:angular
 - tsconfig file is no longer auto created
+- reload support for --html5Mode
 
 ## [1.1.31] - 2017-04-17
 ### Fixed port cli argument

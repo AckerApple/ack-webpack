@@ -1,7 +1,7 @@
 const reload = require('reload')
 const log = require('../log.function')
 const options = {
-  log:log
+  log:log, html5Mode:process.argv.indexOf('--html5Mode')>=0
 }
 
 var portArgIndex = process.argv.indexOf('-p')
