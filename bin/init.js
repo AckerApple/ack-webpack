@@ -12,14 +12,7 @@ const webPacks = ['webpack']
 
 const promisePrompt = require('../promisePrompt.function')
 
-//const tsConfig = require('./tsconfig.es5.json')
-
 function runPrompts(){
-  return runBooleanPrompts()
-  .then(processBooleanPrompts)
-}
-
-function runBooleanPrompts(){
   return promisePrompt([{
     description:'Intall webpack?',
     name:'useWebpack',
@@ -39,18 +32,13 @@ function runBooleanPrompts(){
   }])
 }
 
-function isLikeTrue(v){
-  if(v.toLowerCase())v=v.toLowerCase()
-  return v=='yes' || v=='true' || v=='1'
-}
-
-function processBooleanPrompts(results){
+function processPrompts(results){
   if(!results)return;
 
-  const useWebpack = !results.useWebpack.length || isLikeTrue(results.useWebpack)
-  const usePug = !results.usePug.length || isLikeTrue(results.usePug)
-  //const useJson = !results.useJson.length || isLikeTrue(results.useJson)
-  const useTran = !results.useTran.length || isLikeTrue(results.useTran)
+  const useWebpack = !results.useWebpack.length || promisePrompt.isLikeTrue(results.useWebpack)
+  const usePug = !results.usePug.length || promisePrompt.isLikeTrue(results.usePug)
+  //const useJson = !results.useJson.length || promisePrompt.isLikeTrue(results.useJson)
+  const useTran = !results.useTran.length || promisePrompt.isLikeTrue(results.useTran)
   var tranPromptRes = null
   let promise = Promise.resolve()
 
@@ -122,66 +110,23 @@ function runTypescriptPrompt(){
 }
 
 function installTypescript(options){
-  let promise = installPacks(typesPacks)//.then(()=>paramTsConfig(options))
-
-  /*if(options.ngToolsWebpack){
-    promise.then(()=>installer('@ngtools/webpack'))
-  }*/
-
-  return promise
+  return promiseSpawn.installPacks(typesPacks)
 }
-
-/*function getTsConfigPath(){
-  return path.join(process.cwd(),'tsconfig.json')
-}
-
-function paramTsConfig(options){
-  const tsConfigPath = getTsConfigPath()
-  return new Promise(function(res,rej){
-    fs.readFile(tsConfigPath,function(err,buff){
-      err ? createTsConfig(options) : res()
-    })
-  })
-}
-
-function createTsConfig(options={}){
-  return new Promise((res,rej)=>{
-    fs.writeFile(getTsConfigPath(), JSON.stringify(tsConfig, null, 2), (err)=>{
-      err ? rej(err) : res()
-    })
-  })
-  .then(()=>log("ack-webpack: created tsconfig.json"))
-}*/
 
 function installBabel(){
-  return installPacks(babelPacks)
+  return promiseSpawn.installPacks(babelPacks)
 }
 
-/*function installJson(){
-  return installPacks(jsonPacks)
-}*/
-
 function installPug(){
-  return installPacks(pugPacks)
+  return promiseSpawn.installPacks(pugPacks)
 }
 
 function installWebpack(){
-  return installPacks(webPacks)
-}
-
-function installPacks(packs){
-  let promise = Promise.resolve()
-  packs.forEach( pack=>promise=promise.then(()=>installer(pack)) )
-  return promise
-}
-
-function installer(name){
-  const args = ['npm','install',name,'--save-dev']
-  log('$',args.join(' '))
-  return promiseSpawn(args)
+  return promiseSpawn.installPacks(webPacks)
 }
 
 runPrompts()
+.then(processPrompts)
 .catch(e=>{
   if(e.message=='canceled'){
     console.log();

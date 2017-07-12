@@ -23,6 +23,8 @@ A 4 Step Process
     - [install:js](#installjs)
   - [Project Init Commands](#project-init-commands)
     - [init:angular](#initangular)
+    - [init:font-awesome](#initfont-awesome)
+  - [Install your own jsDependencies](#install-your-own-jsdependencies)
   - [Time Saver Scripts](#time-saver-scripts)
 
 ## Overview
@@ -143,17 +145,24 @@ The following will read jsDependencies in package.json and install them into a f
 npm run ack-webpack -- install:js
 ```
 
-## Project Init Commands
+### Project Init Commands
 Depending on what project you are starting, the following project commands can save you time
 
-### init:angular
+#### init:angular
 A series of questions will help lead to a faster Angular project bootup
 
 ```
 npm run ack-webpack -- init:angular
 ```
 
-#### Install your own jsDependencies
+#### init:font-awesome
+A series of questions will help lead to a faster font-awesome integration into your project
+
+```
+npm run ack-webpack -- init:font-awesome
+```
+
+### Install your own jsDependencies
 Similar to `npm install` but reads/writes **jsDependencies** instead of devDependencies or dependencies.
 
 Example: Install ack-angular-fx

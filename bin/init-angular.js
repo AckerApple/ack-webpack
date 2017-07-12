@@ -11,11 +11,6 @@ const tsAotConfig = require('./lib/tsconfig.es5.aot.json')
 const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','typings.d.ts')).toString()
 
 function runPrompts(){
-  return runBooleanPrompts()
-  .then(processBooleanPrompts)
-}
-
-function runBooleanPrompts(){
   return promisePrompt([{
     description:'app root location?',
     name:'appRoot',
@@ -79,21 +74,16 @@ function runBooleanPrompts(){
   }])
 }
 
-function isLikeTrue(v){
-  if(v.toLowerCase())v=v.toLowerCase()
-  return v=='yes' || v=='true' || v=='1'
-}
-
-function processBooleanPrompts(results){
+function processPrompts(results){
   if(!results)return;
 
   let promise = Promise.resolve()
 
   const appRoot = path.join(process.cwd(), results.appRoot)
   const tsOptions = {
-    paramTsAotConfig : !results.paramTsAotConfig.length || isLikeTrue(results.paramTsAotConfig),
-    paramTsConfig    : !results.paramTsConfig.length || isLikeTrue(results.paramTsConfig),
-    createTypings    : !results.createTypings.length || isLikeTrue(results.createTypings)
+    paramTsAotConfig : !results.paramTsAotConfig.length || promisePrompt.isLikeTrue(results.paramTsAotConfig),
+    paramTsConfig    : !results.paramTsConfig.length || promisePrompt.isLikeTrue(results.paramTsConfig),
+    createTypings    : !results.createTypings.length || promisePrompt.isLikeTrue(results.createTypings)
   }
 
   if(tsOptions.paramTsConfig || tsOptions.paramTsAotConfig || tsOptions.createTypings){
@@ -112,66 +102,56 @@ function processBooleanPrompts(results){
     promise = promise.then( ()=>createTypings(appRoot, tsOptions) )
   }
 
-  if(!results['reflect-metadata'].length || isLikeTrue(results['reflect-metadata'])){
-    promise = promise.then( ()=>installPacks(['reflect-metadata']) )
+  if(!results['reflect-metadata'].length || promisePrompt.isLikeTrue(results['reflect-metadata'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['reflect-metadata']) )
   }
 
-  if(!results['rxjs'].length || isLikeTrue(results['rxjs'])){
-    promise = promise.then( ()=>installPacks(['rxjs']) )
+  if(!results['rxjs'].length || promisePrompt.isLikeTrue(results['rxjs'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['rxjs']) )
   }
 
-  if(!results['zone.js'].length || isLikeTrue(results['zone.js'])){
-    promise = promise.then( ()=>installPacks(['zone.js']) )
+  if(!results['zone.js'].length || promisePrompt.isLikeTrue(results['zone.js'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['zone.js']) )
   }
 
-  if(!results['@angular/core'].length || isLikeTrue(results['@angular/core'])){
-    promise = promise.then( ()=>installPacks(['@angular/core']) )
+  if(!results['@angular/core'].length || promisePrompt.isLikeTrue(results['@angular/core'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/core']) )
   }
 
-  if(!results['@angular/common'].length || isLikeTrue(results['@angular/common'])){
-    promise = promise.then( ()=>installPacks(['@angular/common']) )
+  if(!results['@angular/common'].length || promisePrompt.isLikeTrue(results['@angular/common'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/common']) )
   }
 
-  if(!results['@angular/compiler'].length || isLikeTrue(results['@angular/compiler'])){
-    promise = promise.then( ()=>installPacks(['@angular/compiler']) )
+  if(!results['@angular/compiler'].length || promisePrompt.isLikeTrue(results['@angular/compiler'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/compiler']) )
   }
 
-  if(!results['@angular/compiler-cli'].length || isLikeTrue(results['@angular/compiler-cli'])){
-    promise = promise.then( ()=>installPacks(['@angular/compiler-cli']) )
+  if(!results['@angular/compiler-cli'].length || promisePrompt.isLikeTrue(results['@angular/compiler-cli'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/compiler-cli']) )
   }
 
-  if(!results['@angular/platform-browser'].length || isLikeTrue(results['@angular/platform-browser'])){
-    promise = promise.then( ()=>installPacks(['@angular/platform-browser']) )
+  if(!results['@angular/platform-browser'].length || promisePrompt.isLikeTrue(results['@angular/platform-browser'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/platform-browser']) )
   }
 
-  if(!results['@angular/platform-browser-dynamic'].length || isLikeTrue(results['@angular/platform-browser-dynamic'])){
-    promise = promise.then( ()=>installPacks(['@angular/platform-browser-dynamic']) )
+  if(!results['@angular/platform-browser-dynamic'].length || promisePrompt.isLikeTrue(results['@angular/platform-browser-dynamic'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/platform-browser-dynamic']) )
   }
 
-  if(!results['@angular/http'].length || isLikeTrue(results['@angular/http'])){
-    promise = promise.then( ()=>installPacks(['@angular/http']) )
+  if(!results['@angular/http'].length || promisePrompt.isLikeTrue(results['@angular/http'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/http']) )
   }
 
-  if(!results['@angular/router'].length || isLikeTrue(results['@angular/router'])){
-    promise = promise.then( ()=>installPacks(['@angular/router']) )
+  if(!results['@angular/router'].length || promisePrompt.isLikeTrue(results['@angular/router'])){
+    promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/router']) )
   }
 
   return promise
 }
 
-function installPacks(packs){
-  let promise = Promise.resolve()
-  packs.forEach( pack=>promise=promise.then(()=>installer(pack)) )
-  return promise
-}
-
-function installer(name){
-  const args = ['npm','install',name,'--save-dev']
-  log('$',args.join(' '))
-  return promiseSpawn(args)
-}
 
 runPrompts()
+.then(processPrompts)
 .catch(e=>{
   if(e.message=='canceled'){
     console.log();

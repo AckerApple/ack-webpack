@@ -5,6 +5,7 @@ const firstArg = process.argv[2]
 switch(firstArg){
   case 'init':require('./init');break
   case 'init:angular':require('./init-angular');break
+  case 'init:font-awesome':require('./init-font-awesome');break
 
   case 'reload':require('./reload');break
 

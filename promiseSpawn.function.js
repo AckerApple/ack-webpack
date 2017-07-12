@@ -17,7 +17,7 @@ function filterArgs(args){
     log:optional, typically console.log.bind(console)
   }
 */
-module.exports = function promiseJavaSpawn(sArgs, options){
+function promiseSpawn(sArgs, options){
   return new Promise((res,rej)=>{
     const dataArray = []
 
@@ -69,3 +69,16 @@ module.exports = function promiseJavaSpawn(sArgs, options){
     })
   })
 }
+module.exports = promiseSpawn
+
+module.exports.installPacks = function(packs){
+  let promise = Promise.resolve()
+  packs.forEach( pack=>promise=promise.then(()=>installer(pack)) )
+  return promise
+}
+
+function installer(name){
+  const args = ['npm','install',name,'--save-dev']
+  return promiseSpawn(args)
+}
+module.exports.installer = installer

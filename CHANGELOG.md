@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.37] - 2017-07-12
+### Added
+- init:font-awesome prompt of queries
+
 ## [1.1.35] - 2017-04-17
 ### Added
 - npm run -- ack-webpack init:angular

@@ -18,3 +18,8 @@ module.exports.stop = function(){
 }
 
 module.exports.prompt = prompt
+
+module.exports.isLikeTrue = function(v){
+  if(v.toLowerCase())v=v.toLowerCase()
+  return v=='yes' || v=='true' || v=='1'
+}

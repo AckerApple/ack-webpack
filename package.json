@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.1.36",
+  "version": "1.1.37",
   "description": "A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.",
   "main": "webpack.config.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "test:install:out": "node ./bin/cli install --out test/results/js_modules",
     "test:install:js": "node ./bin/cli install:js",
     "test:init:angular": "node ./bin/cli init:angular",
+    "test:init:font-awesome": "node ./bin/cli init:font-awesome",
     "postinstall": "node ./postinstall",
     "ack-webpack": "node ./bin/cli"
   },
