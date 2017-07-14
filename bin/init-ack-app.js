@@ -309,7 +309,7 @@ function processPrompts(results){
       const htmlMode = promisePrompt.isLikeTrue(results.html5Mode) ? ' --html5Mode' : ''
       packHelp.setScript(
         "watch:js",
-        "ack-webpack "+path.join(myAppSrcPath,"index.aot.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json") + htmlMode + " --watch --browser="+results.buildPath,
+        "ack-webpack "+path.join(myAppSrcPath,"index.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json") + htmlMode + " --watch --browser="+results.buildPath,
         "Builds one TypeScript source file into a final www output file. Node memory has been increased to cover large app builds"
       )
     }
