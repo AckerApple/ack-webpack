@@ -60,18 +60,6 @@ function processPrompts(results){
   
   if(!results)return promise;
 
-  if( promisePrompt.isLikeTrue(results.install) ){
-    promise = promise
-    .then(()=>log('Installing ack-angular...'))
-    .then( ()=>promiseSpawn.installPacks(['ack-angular']) )
-  }
-
-  if( promisePrompt.isLikeTrue(results.installFx) ){
-    promise = promise
-    .then(()=>log('Installing ack-angular-fx...'))
-    .then( ()=>promiseSpawn.installPacks(['@angular/animations','ack-angular-fx']) )
-  }
-
   /* ack-angular-fx scripting */
     const addFxScripts = results.addFxScripts!=null && promisePrompt.isLikeTrue(results.addFxScripts)
     if(addFxScripts){
@@ -90,7 +78,21 @@ function processPrompts(results){
       .then(()=>packHelp.save())
     }
 
-    if( results.runPrefx!=null && promisePrompt.isLikeTrue(results.runPrefx) ){
+    /* installs : must come after package.json save */
+      if( promisePrompt.isLikeTrue(results.install) ){
+        promise = promise
+        .then(()=>log('Installing ack-angular...'))
+        .then( ()=>promiseSpawn.installPacks(['ack-angular']) )
+      }
+
+      if( promisePrompt.isLikeTrue(results.installFx) ){
+        promise = promise
+        .then(()=>log('Installing ack-angular-fx...'))
+        .then( ()=>promiseSpawn.installPacks(['@angular/animations','ack-angular-fx']) )
+      }
+    /* end: installs */
+
+    if( promisePrompt.isLikeTrue(results.runPrefx) ){
       promise = promise
       .then(()=>log('Creating ack-angular-fx prefx.ts file...'))
       .then( ()=>promiseSpawn(['npm','run','compile:prefx'], {log:log}) )

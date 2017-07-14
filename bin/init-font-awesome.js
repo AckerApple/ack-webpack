@@ -72,6 +72,10 @@ function processPrompts(results){
       "ack-path copy node_modules/font-awesome/fonts "+fontFolderRef,
       "Clones font-awesome font files like .ttf and .woff like files from node_modules folder into www output asset folder"
     )
+    
+    promise = promise
+    .then(()=>log('Saving package.json...'))
+    .then(()=>packHelp.save())
 
     if( !promiseSpawn.isModuleInstalled('ack-path') ){
       promise = promise
@@ -84,10 +88,6 @@ function processPrompts(results){
       .then( ()=>log('To handle running multiple scripts across any device, npm-run-all will be installed') )
       .then( ()=>promiseSpawn.installPacks(['npm-run-all']) )
     }
-    
-    promise = promise
-    .then(()=>log('Saving package.json...'))
-    .then(()=>packHelp.save())
   }
 
   if(results.copyFontAwesome!=null && promisePrompt.isLikeTrue(results.copyFontAwesome)){

@@ -112,6 +112,13 @@ function getScriptsSchema(){
       ask: isPerformScripts
     })
 
+    schema.push({
+      description:'Enter index.js file path',
+      name:'assetIndexFilePath',
+      default: ()=>path.join( getBuildPath(), 'assets','scripts','index.js'),
+      ask: ()=>isPerformScripts() && promisePrompt.historyValueLikeTrue('addBuildJs')
+    })
+
     if( !packHelp.scriptDefined("watch:js") ){
       schema.push({
         description:'App has Html5 based routing',
@@ -145,14 +152,6 @@ function getScriptsSchema(){
       ask: ()=>promisePrompt.historyValueLikeTrue('addScripts') && promisePrompt.historyValueLikeTrue('addBuildCss')
     })    
   }
-
-  schema.push({
-    description:'Enter index.js file path',
-    name:'assetIndexFilePath',
-    default: ()=>path.join( getBuildPath(), 'assets','scripts','index.js'),
-    ask: isPerformScripts
-  })
-
 
   const indexScriptDefined = packHelp.scriptDefined("build:index") 
   if( !indexScriptDefined ){
@@ -211,13 +210,13 @@ function paramAngularCompilers(){
   if( !promiseSpawn.isModuleInstalled('@angular/compiler') ){
     promise = promise
     .then( ()=>log('Installing @angular/compiler-cli to handle AoT compilation') )
-    .then( ()=>promiseSpawn.installPacks(['@angular/compiler']) )
+    .then( ()=>promiseSpawn.installPacks(['@angular/compiler'],{log:log}) )
   }
   
   if( !promiseSpawn.isModuleInstalled('@angular/compiler-cli') ){
     promise = promise
     .then( ()=>log('Installing @angular/compiler-cli to handle AoT compilation') )
-    .then( ()=>promiseSpawn.installPacks(['@angular/compiler-cli']) )
+    .then( ()=>promiseSpawn.installPacks(['@angular/compiler-cli'],{log:log}) )
   }
 
   return promise
@@ -229,7 +228,8 @@ function processPrompts(results){
   if(!results)return promise;
 
   let savePack = false
-
+  const installs = []
+  let paramNgCompilers = false
   const myAppSrcPath = results.appSrcPath
 
   /* build:index scripting */
@@ -279,9 +279,7 @@ function processPrompts(results){
     }
 
     if( !promiseSpawn.isModuleInstalled('ack-pug-bundler') ){    
-      promise = promise
-      .then( ()=>log('Installing ack-pug-bundler to handle casting pugs to .ts files') )
-      .then( ()=>promiseSpawn.installPacks(['ack-pug-bundler']) )
+      installs.push({name:'ack-pug-bundler', details:'Installing ack-pug-bundler to handle casting pugs to .ts files'})
     }
   }
 
@@ -294,7 +292,7 @@ function processPrompts(results){
       "Compiles TypeScript source files, Ahead of Time to reduce load times, to output folder"
     )
 
-    promise = promise.then( paramAngularCompilers )
+    paramNgCompilers = true
   }
 
   // build:js
@@ -316,7 +314,7 @@ function processPrompts(results){
       )
     }
     
-    promise = promise.then( paramAngularCompilers )
+    paramNgCompilers = true
   }
 
   // build:css
@@ -338,9 +336,7 @@ function processPrompts(results){
     }
 
     if( !promiseSpawn.isModuleInstalled('ack-sass') ){    
-      promise = promise
-      .then( ()=>log('Installing ack-sass to handle casting .scss files to .css file') )
-      .then( ()=>promiseSpawn.installPacks(['ack-sass']) )
+      installs.push({name:'ack-sass', details:'Installing ack-sass to handle casting .scss files to .css file'})
     }
 
     //default styles.scss file
@@ -378,8 +374,8 @@ function processPrompts(results){
       buildArray.join(' '),
       "Builds TypeScript files to output folder"
     )
-    promise = promise.then( paramAngularCompilers )
 
+    paramNgCompilers = true
   }
 
   if( promisePrompt.isLikeTrue(results.manageWatchScript) ){
@@ -408,8 +404,21 @@ function processPrompts(results){
   }
 
   //AFTER package scripting
-  if(savePack){
+  if( savePack ){
     promise = promise.then( ()=>packHelp.save() )
+  }
+
+  if( paramNgCompilers ){
+    promise = promise.then( paramAngularCompilers )
+  }
+
+  //INSTALLS MUST COME AFTER package manipulations
+  if( installs.length ){
+    installs.forEach(install=>{
+      promise = promise
+      .then( ()=>log(install.details) )
+      .then( ()=>promiseSpawn.installPacks([install.name],{log:log}) )
+    })
   }
 
   //build index.ts    
@@ -472,7 +481,6 @@ runPrompts()
 .then(processPrompts)
 .catch(e=>{
   if(e.message=='canceled'){
-    console.log();
     return
   }
   log.error(e)

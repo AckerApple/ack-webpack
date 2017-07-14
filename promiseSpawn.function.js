@@ -46,18 +46,16 @@ function promiseSpawn(sArgs, options){
       return err
     }
 
-    ls.stdout.on('data', data=>dataArray.push(data));
-    ls.stderr.on('data', data=>dataArray.push(data));
-    ls.stdout.on('error', err=>spawnError=err)
-    ls.stderr.on('error', err=>spawnError=err)
+    let onData = data=>dataArray.push(data)
+    let onError = err=>spawnError=err
 
     if(options && options.log){
-      ls.stdout.on('data', data=>options.log(data.toString()));
-      ls.stderr.on('data', data=>options.log(data.toString()));
-      ls.stdout.on('error', err=>options.log(err))
-      ls.stderr.on('error', err=>options.log(err))
+      onData = data=>dataArray.push(data) && options.log(data.toString())
+      onError = err=>spawnError=err && options.log(err)
     }
-
+    
+    ls.stderr.on('data', onData)
+    ls.stderr.on('error', onError)
 
     ls.on('close', code=>{
       if(spawnError){
@@ -65,22 +63,26 @@ function promiseSpawn(sArgs, options){
       }
 
       const output = dataArray.join('')//bring all cli data together
+
+      if(options && options.log){
+        options.log( output )
+      }
+
       res( output )
-      //res()
     })
   })
 }
 module.exports = promiseSpawn
 
-module.exports.installPacks = function(packs){
+module.exports.installPacks = function(packs, options){
   let promise = Promise.resolve()
-  packs.forEach( pack=>promise=promise.then(()=>installer(pack)) )
+  packs.forEach( pack=>promise=promise.then(()=>installer(pack,options)) )
   return promise
 }
 
-function installer(name){
-  const args = ['npm','install',name,'--save-dev']
-  return promiseSpawn(args)
+function installer(name, options){
+  const args = ['npm','install','--save-dev',name]
+  return promiseSpawn(args, options)
 }
 module.exports.installer = installer
 
