@@ -345,7 +345,7 @@ function processPrompts(results){
     .then( defined=>{
       if(defined)return
       log('Created empty '+results.sassInputPath+' file')
-      return Path.writeFile('')
+      return Path.writeFile( ackPath( __dirname ).join('lib','ack-angular','styles.scss').File().sync().readAsString() )
     })
   }
 

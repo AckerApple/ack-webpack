@@ -41,6 +41,11 @@ This package greatly reduces common project setup times for the task of bundling
 ## Installation
 Install ack-webpack into your project
 
+### Pre-Install Check
+- Ensure you have a package.json file in the project folder you will be install ack-webpack into
+  - Inside your project folder, you can run ```npm init``` in a command prompt terminal, to create a package.json file
+
+### Primary Install Command
 ```bash
 npm install ack-webpack --save-dev
 ```
