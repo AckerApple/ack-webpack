@@ -35,10 +35,10 @@ function runPrompts(){
 function processPrompts(results){
   if(!results)return;
 
-  const useWebpack = !results.useWebpack.length || promisePrompt.isLikeTrue(results.useWebpack)
-  const usePug = !results.usePug.length || promisePrompt.isLikeTrue(results.usePug)
-  //const useJson = !results.useJson.length || promisePrompt.isLikeTrue(results.useJson)
-  const useTran = !results.useTran.length || promisePrompt.isLikeTrue(results.useTran)
+  const useWebpack = promisePrompt.isLikeTrue(results.useWebpack)
+  const usePug = promisePrompt.isLikeTrue(results.usePug)
+  //const useJson = promisePrompt.isLikeTrue(results.useJson)
+  const useTran = promisePrompt.isLikeTrue(results.useTran)
   var tranPromptRes = null
   let promise = Promise.resolve()
 

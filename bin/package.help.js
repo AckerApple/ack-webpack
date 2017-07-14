@@ -30,4 +30,23 @@ module.exports = class PackHelp{
     const write = JSON.stringify(this.packJson, null, 2)
     fs.writeFileSync(this.packPath, write)
   }
+
+  setScript(name, script, details){
+    this.loadPackJson()
+    this.packJson.scripts = this.packJson.scripts || {}
+    this.packJson.scripts[ name ] = script
+
+    if(details){
+      this.packJson.scriptsInfo = this.packJson.scriptsInfo || {}
+      this.packJson.scriptsInfo[ name ] = details
+    }
+  }
+
+  getScript(name){
+    this.loadPackJson()
+    
+    if( this.packJson.scripts && this.packJson.scripts[name] ){
+      return this.packJson.scripts[name]
+    }
+  }
 }

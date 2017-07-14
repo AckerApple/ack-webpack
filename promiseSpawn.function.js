@@ -1,3 +1,4 @@
+const ackPath = require('ack-path')
 const childProcess = require('child_process')
 const spawn = childProcess.spawn;
 const windows = process.platform === 'win32'
@@ -82,3 +83,19 @@ function installer(name){
   return promiseSpawn(args)
 }
 module.exports.installer = installer
+
+function isModuleInstalled(name){
+  try{
+    require(name)
+    return true
+  }catch(e){
+    const isNotFoundError = e && e.message.match('Cannot find module')
+    
+    if(isNotFoundError){
+      return ackPath( process.cwd() ).join('node_modules',name).sync().exists()
+    }
+
+    return true
+  }
+}
+module.exports.isModuleInstalled = isModuleInstalled

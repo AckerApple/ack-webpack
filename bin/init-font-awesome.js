@@ -7,7 +7,6 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
-const packJson = packHelp.loadPackJson()
 const assetDefaultPath = path.join('app','www','assets','fonts','font-awesome')
 
 function runPrompts(){
@@ -29,10 +28,7 @@ function runPrompts(){
       description:'Enter project assets path',
       name:'assetPath',
       default:assetDefaultPath,
-      ask: function() {
-        const copy = promisePrompt.prompt.history('copyFontAwesome')
-        return copy==null ? false : promisePrompt.isLikeTrue( copy.value )
-      }
+      ask: ()=>promisePrompt.isLikeTrue( promisePrompt.prompt.history('addScripts').value )
     })
   }
 
@@ -40,9 +36,7 @@ function runPrompts(){
     description:'Run script to clone font-awesome to assets folder',
     name:'copyFontAwesome',
     default:'yes',
-    ask: function() {
-      return scriptDefined || promisePrompt.isLikeTrue( promisePrompt.prompt.history('addScripts').value );
-    }
+    ask: ()=>scriptDefined || promisePrompt.isLikeTrue( promisePrompt.prompt.history('addScripts').value )
   })
 
   return promisePrompt(schema)
@@ -53,30 +47,50 @@ function processPrompts(results){
   
   if(!results)return promise;
 
-  if(!results.install.length || promisePrompt.isLikeTrue(results.install)){
+  if( promisePrompt.isLikeTrue(results.install) ){
     promise = promise.then( ()=>promiseSpawn.installPacks(['font-awesome']) )
   }
 
-  const addScripts = results.addScripts!=null && (!results.addScripts.length || promisePrompt.isLikeTrue(results.addScripts))
+  const addScripts = results.addScripts!=null && promisePrompt.isLikeTrue(results.addScripts)
   if(addScripts){
     const assetPath = results.assetPath.length ? results.assetPath : assetDefaultPath
     const cssFileRef = path.join(assetPath, "css", "font-awesome.min.css")
     const fontFolderRef = path.join(assetPath, "fonts")
     
-    packJson.scripts = packJson.scripts || {}
-    packJson.scripts["copy:fonts"] = "npm-run-all -s copy:font-awesome:fonts copy:font-awesome:css",
-    packJson.scripts["copy:font-awesome:css"] = "ack-path copy node_modules/font-awesome/css/font-awesome.min.css "+cssFileRef,
-    packJson.scripts["copy:font-awesome:fonts"] = "ack-path copy node_modules/font-awesome/fonts "+fontFolderRef,
+    packHelp.setScript(
+      "copy:fonts",
+      "npm-run-all -s copy:font-awesome:fonts copy:font-awesome:css",
+      "Runs two commands to move font-awesome from node_modules into www output asset folder"
+    )
+    packHelp.setScript(
+      "copy:font-awesome:css",
+      "ack-path copy node_modules/font-awesome/css/font-awesome.min.css "+cssFileRef,
+      "Clones font-awesome.min.css file from node_modules folder into www output asset folder"
+    )
+    packHelp.setScript(
+      "copy:font-awesome:fonts",
+      "ack-path copy node_modules/font-awesome/fonts "+fontFolderRef,
+      "Clones font-awesome font files like .ttf and .woff like files from node_modules folder into www output asset folder"
+    )
 
-    log('To handle copy/paste of font-awesome files, ack-path will be installed')
-    log('To handle running multiple scripts across any device, npm-run-all will be installed')
-    log('Installing ack-path and npm-run-all...')
-    promise = promise.then( ()=>promiseSpawn.installPacks(['ack-path','npm-run-all']) )
+    if( !promiseSpawn.isModuleInstalled('ack-path') ){
+      promise = promise
+      .then( ()=>log('To handle copy/paste of font-awesome files, ack-path will be installed') )
+      .then( ()=>promiseSpawn.installPacks(['ack-path']) )
+    }
+    
+    if( !promiseSpawn.isModuleInstalled('npm-run-all') ){
+      promise = promise
+      .then( ()=>log('To handle running multiple scripts across any device, npm-run-all will be installed') )
+      .then( ()=>promiseSpawn.installPacks(['npm-run-all']) )
+    }
+    
+    promise = promise
     .then(()=>log('Saving package.json...'))
     .then(()=>packHelp.save())
   }
 
-  if(results.copyFontAwesome!=null && (!results.copyFontAwesome.length || promisePrompt.isLikeTrue(results.copyFontAwesome))){
+  if(results.copyFontAwesome!=null && promisePrompt.isLikeTrue(results.copyFontAwesome)){
     promise = promise
     .then(()=>log('Cloning font-awesome from node_modules folder into asset folder...'))
     .then( ()=>promiseSpawn(['npm','run','copy:fonts'], {log:log}) )

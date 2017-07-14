@@ -24,6 +24,8 @@ A 4 Step Process
   - [Project Init Commands](#project-init-commands)
     - [init:angular](#initangular)
     - [init:font-awesome](#initfont-awesome)
+    - [init:ack-angular](#initack-angular)
+    - [init:ack-app](#initack-app)
   - [Install your own jsDependencies](#install-your-own-jsdependencies)
   - [Time Saver Scripts](#time-saver-scripts)
 
@@ -160,6 +162,20 @@ A series of questions will help lead to a faster font-awesome integration into y
 
 ```
 npm run ack-webpack -- init:font-awesome
+```
+
+#### init:ack-angular
+A series of questions will help lead to a faster ack-angular integration into your project
+
+```
+npm run ack-webpack -- init:ack-angular
+```
+
+#### init:ack-app
+A series of questions will help lead to a faster application setup the Acker way
+
+```
+npm run ack-webpack -- init:ack-app
 ```
 
 ### Install your own jsDependencies
