@@ -54,6 +54,8 @@ function promiseSpawn(sArgs, options){
       onError = err=>spawnError=err && options.log(err)
     }
     
+    ls.stdout.on('data', onData)
+    ls.stdout.on('error', onError)
     ls.stderr.on('data', onData)
     ls.stderr.on('error', onError)
 

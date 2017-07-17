@@ -139,6 +139,15 @@ function getInstallSchema(){
     })
   }
 
+  if( !promiseSpawn.isModuleInstalled('@angular/forms') ){
+    schema.push({
+      description:'Intall @angular/forms?',
+      name:'@angular/forms',
+      default:'yes',
+      ask:isPerformInstalls
+    })
+  }
+
   if( !promiseSpawn.isModuleInstalled('@angular/router') ){
     schema.push({
       description:'Intall @angular/router?',

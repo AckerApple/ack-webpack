@@ -8,7 +8,7 @@ const install = require('../install.function')
 const rootPackPath = process.cwd()
 
 class SubInstall{
-  constructor(packPath, config={originalPackage:null, lock:false}){
+  constructor(packPath, config={originalPackage:null, lock:false, dev:true}){
     this.packPath = packPath
     this.config = config
   }
@@ -41,15 +41,25 @@ class SubInstall{
 
   getPack(){
     if( this.packageJson )return this.packageJson;
-    return this.packageJson = JSON.parse( fs.readFileSync( this.getPackPath() ).toString() )
+    return this.packageJson = this.fetchPack()
+  }
+
+  fetchPack(){
+    return JSON.parse( fs.readFileSync( this.getPackPath() ).toString() )
   }
 
   getInstalls(){
     return this.getPack()[ this.getDepKey() ]
   }
 
-  performInstalls(){
+  performInstalls(name, version){
     return this.performInstallsBy( this.getInstalls() )
+  }
+  
+  performInstallBy(name, version){
+    const ob = {}    
+    ob[name] = version
+    return this.performInstallsBy(ob)
   }
 
   performInstallsBy(installs){
@@ -60,7 +70,8 @@ class SubInstall{
 //    const installArray = []
 //    const subInstalls = []
     Object.keys(installs).forEach(name=>{
-      let installDef = name+'@'+installs[name]
+      const versionDef = installs[name] ? '@' + installs[name] : ''
+      const installDef = name + versionDef
 
       let resolvePath = ''
 
@@ -74,27 +85,21 @@ class SubInstall{
       .then( config=>this.saveName(name, installs[name]) )
       .then( ()=>new SubInstall( require.resolve(resolvePath), this.config) )
       .then( SubInstall=>SubInstall.performInstalls() )
-/*
-      installArray.push( installDef )
-      this.saveName(name, installs[name])
-      promise = promise.then( ()=>install(name,this.config) )
-      promise.then( ()=>subInstalls.push(new SubInstall( require.resolve(name), this.config)) )
-*/
     })
-/*
-    return install(installArray.join(' '),this.config)
-    .then( ()=>subInstalls.map(SubInstall=>SubInstall.performInstalls()) )
-    .then( promises=>Promise.all(promises) )
-*/
+
     return promise
   }
 
   saveName(name, version){
-    if(!this.config.lock || !this.config.originalPackage){
+    if(!this.config.lock){
       return name
     }
-    this.config.originalPackage[ this.getDepKey() ][ name ] = version
-    return name
+
+    const pack = this.fetchPack()//always a fresh copy incase background changes like npm modified the package.json file
+    const key = this.getDepKey()
+    pack[ key ] = pack[ key ] || {}
+    pack[ key ][ name ] = version
+    this.savePack( pack )
   }
 
   saveInstallByName(name){
@@ -123,10 +128,6 @@ class SubInstall{
     const pack = this.getPack()
     pack.jsDependencies = pack.jsDependencies || {}
     pack.jsDependencies[ name ] = (version || name)
-    
-    const installDef = {}
-    installDef[name] = version
-    return this.performInstallsBy( installDef )
   }
 
   savePack(pack){
@@ -181,11 +182,14 @@ module.exports.exec = function(args){
   }
 
   if( requestedInstalls.length ){
-    subInstall.config.lock = args.indexOf('--lock')>=0
-    subInstall.config.originalPackage = subInstall.getPack()
-    for(let x=0; x < requestedInstalls.length; ++x){
-      promise = promise.then( ()=>subInstall.saveInstallByName(requestedInstalls[x]) )
-    }
+    requestedInstalls.forEach(name=>{
+      subInstall.config.lock = args.indexOf('--lock')>=0
+      //subInstall.config.originalPackage = subInstall.getPack()
+      promise = promise.then( ()=>install.promiseVersion(name) )
+      promise = promise.then( version=>subInstall.performInstallBy(name, version) )
+      promise = promise.then( ()=>subInstall.saveInstallByName(name) )
+      promise = promise.then( ()=>subInstall.savePack() )
+    })
 
     if( args.indexOf('--no-save')<0 ){
       promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )

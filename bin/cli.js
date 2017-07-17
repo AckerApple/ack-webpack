@@ -9,6 +9,7 @@ switch(firstArg){
   case 'init:angular':require('./init-angular');break
   case 'init:ack-angular':require('./init-ack-angular');break
   case 'init:ack-app':require('./init-ack-app');break
+  case 'init:ts-dist':require('./init-ts-dist');break
 
   case 'reload':require('./reload');break
 

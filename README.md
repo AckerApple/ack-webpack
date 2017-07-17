@@ -26,6 +26,7 @@ A 4 Step Process
     - [init:font-awesome](#initfont-awesome)
     - [init:ack-angular](#initack-angular)
     - [init:ack-app](#initack-app)
+    - [init:ts-dist](#initts-dist)
   - [Install your own jsDependencies](#install-your-own-jsdependencies)
   - [Time Saver Scripts](#time-saver-scripts)
 
@@ -181,6 +182,13 @@ A series of questions will help lead to a faster application setup the Acker way
 
 ```
 npm run ack-webpack -- init:ack-app
+```
+
+#### init:ts-dist
+A series of questions will help lead to a faster TypeScript distribution package
+
+```
+npm run ack-webpack -- init:ts-dist
 ```
 
 ### Install your own jsDependencies

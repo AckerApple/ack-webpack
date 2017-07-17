@@ -1,6 +1,12 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.42] - 2017-07-17
+### Added
+- init:ts-dist
+### Fix
+- promiseSpawn
+
 ## [1.1.38] - 2017-07-14
 ### Added
 - init:ack-angular
