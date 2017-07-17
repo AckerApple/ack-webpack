@@ -33,7 +33,22 @@ function runPrompts(){
 }
 
 function getIndexingSchema(){
-  const schema = []
+  const schema = [{
+    description:'Create default tsconfig.json?',
+    name:'createTsConfig',
+    default:'yes',
+    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.json') )
+  },{
+    description:'Create default tsconfig.aot.json?',
+    name:'createTsAotConfig',
+    default:'yes',
+    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.aot.json') )
+  },{
+    description:'Create default typings.d.ts?',
+    name:'createTypings',
+    default:'yes',
+    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'typings.d.ts') )
+  }]
   
   //index.ts
   schema.push({
@@ -231,6 +246,9 @@ function processPrompts(results){
   const installs = []
   let paramNgCompilers = false
   const myAppSrcPath = results.appSrcPath
+
+  promise = promise.then( ()=>ackPath( results.appSrcPath ).paramDir() )
+  promise = promise.then( ()=>processTsResults(results) )
 
   /* build:index scripting */
     const addBuildIndex = promisePrompt.isLikeTrue(results.addBuildIndex)
@@ -475,6 +493,68 @@ function processPrompts(results){
   /* end : after run scripts */
 
   return promise
+}
+
+function processTsResults(results){
+  let promise = Promise.resolve()
+  const appRoot = getAppSrcPath()
+  const tsOptions = {
+    writeTsAotConfig : promisePrompt.isLikeTrue(results.writeTsAotConfig),
+    writeTsConfig    : promisePrompt.isLikeTrue(results.writeTsConfig),
+    createTypings    : promisePrompt.isLikeTrue(results.createTypings)
+  }
+
+  if(tsOptions.writeTsConfig || tsOptions.writeTsAotConfig || tsOptions.createTypings){
+    promise = promise.then( ()=>ackPath(appRoot).param() )
+  }
+
+  if(tsOptions.writeTsConfig){
+    promise = promise.then( ()=>writeTsConfig(appRoot, tsOptions) )
+  }
+
+  if(tsOptions.writeTsAotConfig){
+    promise = promise.then( ()=>writeTsAotConfig(appRoot, tsOptions) )
+  }
+
+  if(tsOptions.createTypings){
+    promise = promise.then( ()=>createTypings(appRoot, tsOptions) )
+  }
+
+  return promise
+}
+
+function writeTsConfig(appRoot, options){
+  const filePath = path.join(appRoot,'tsconfig.json')
+  const exists = fs.existsSync( filePath )
+  if(exists)return
+  const config = tsConfig
+  if(options && options.createTypings){
+    config.files = config.files || []
+    config.files.push('typings.d.ts')
+  }
+  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
+  log('created',filePath)
+}
+
+function writeTsAotConfig(appRoot, options){
+  const filePath = path.join(appRoot,'tsconfig.aot.json')
+  const exists = fs.existsSync( filePath )
+  if(exists)return
+  const config = tsAotConfig
+  if(options && options.createTypings){
+    config.files = config.files || []
+    config.files.push('typings.d.ts')
+  }
+  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
+  log('created',filePath)
+}
+
+function createTypings(appRoot, options){
+  const filePath = path.join(appRoot,'typings.d.ts')
+  const exists = fs.existsSync( filePath )
+  if(exists)return
+  fs.writeFileSync(filePath, typingsConfig)
+  log('created',filePath)
 }
 
 runPrompts()

@@ -25,7 +25,21 @@ function runPrompts(){
     name:'createTsConfigFile',
     default:'yes',
     ask:()=>!ackPath( promisePrompt.historyValue('distSrcPath') ).sync().exists()
+  },{
+    description:'Create tsconfig file',
+    name:'createTsConfigFile',
+    default:'yes',
+    ask:()=>!ackPath( promisePrompt.historyValue('distSrcPath') ).sync().exists()
   }]
+
+  const buildScriptDefined = packHelp.scriptDefined("build")
+  if( !buildScriptDefined ){
+    schema.push({
+      description:'Add build convenient script to npm package',
+      name:'addBuildScript',
+      default:'yes'
+    })
+  }
 
   return promisePrompt(schema)
 }
@@ -34,6 +48,8 @@ function processPrompts(results){
   let promise = Promise.resolve()
   
   if(!results)return promise;
+
+  let savePack = false
 
   //param directories
   promise = promise.then( ()=>ackPath( results.distSrcPath ).paramDir() )
@@ -51,6 +67,28 @@ function processPrompts(results){
       return Path.paramDir()
       .then( ()=>Path.writeFile(fromData) )
     })
+  }
+
+  const addBuildScript = promisePrompt.isLikeTrue(results.addBuildScript)
+  if(addBuildScript){
+    savePack = true
+    packHelp.setScript(
+      "build",
+      "ngc --declaration --project " + results.distSrcPath,
+      "Builds source code into a distributable package"
+    )
+
+    if( !promiseSpawn.isModuleInstalled('@angular/compiler') ){
+      installs.push({name:'@angular/compiler', details:'Installing @angular/compiler to handle compiling typescript files in NodeJs'})
+    }
+    if( !promiseSpawn.isModuleInstalled('@angular/compiler-cli') ){
+      installs.push({name:'@angular/compiler-cli', details:'Installing @angular/compiler-cli to handle invoking @angular/compiler from a command line interface'})
+    }
+  }
+
+  if(savePack){
+    promise = promise.then(()=>log('Saving package.json...'))
+    .then(()=>packHelp.save())
   }
 
   return promise

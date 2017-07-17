@@ -22,7 +22,8 @@ function appSrcNeeded(){
 }
 
 function runPrompts(){
-  const schema = [{
+  const schema = []
+  /*[{
     description:'Param tsconfig.json?',
     name:'paramTsConfig',
     default:'yes'
@@ -43,7 +44,7 @@ function runPrompts(){
     description:'Would you like to choose angular packages to install?',
     name:'performInstalls',
     default:'yes'
-  }]
+  }]*/
 
   schema.push.apply(schema, getInstallSchema())
 
@@ -52,7 +53,8 @@ function runPrompts(){
 
 
 function isPerformInstalls(){
-  return promisePrompt.historyValueLikeTrue('performInstalls')
+  return true
+  //return promisePrompt.historyValueLikeTrue('performInstalls')
 }
 
 function getInstallSchema(){
@@ -183,6 +185,7 @@ function processPrompts(results){
 
   let promise = Promise.resolve()
 
+  /*
   const appRoot = path.join(process.cwd(), results.appRoot)
   const tsOptions = {
     paramTsAotConfig : promisePrompt.isLikeTrue(results.paramTsAotConfig),
@@ -208,7 +211,9 @@ function processPrompts(results){
 
   if(promisePrompt.isLikeTrue(results.performInstalls)){
     promise = performInstalls(results)
-  }
+  }*/
+
+  promise = performInstalls(results)
 
   return promise
 }
@@ -293,38 +298,4 @@ function performInstalls(results){
   }
 
   return promise
-}
-
-function paramTsConfig(appRoot, options){
-  const filePath = path.join(appRoot,'tsconfig.json')
-  const exists = fs.existsSync( filePath )
-  if(exists)return
-  const config = tsConfig
-  if(options && options.createTypings){
-    config.files = config.files || []
-    config.files.push('typings.d.ts')
-  }
-  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
-  log('created',filePath)
-}
-
-function paramTsAotConfig(appRoot, options){
-  const filePath = path.join(appRoot,'tsconfig.aot.json')
-  const exists = fs.existsSync( filePath )
-  if(exists)return
-  const config = tsAotConfig
-  if(options && options.createTypings){
-    config.files = config.files || []
-    config.files.push('typings.d.ts')
-  }
-  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
-  log('created',filePath)
-}
-
-function createTypings(appRoot, options){
-  const filePath = path.join(appRoot,'typings.d.ts')
-  const exists = fs.existsSync( filePath )
-  if(exists)return
-  fs.writeFileSync(filePath, typingsConfig)
-  log('created',filePath)
 }

@@ -1,13 +1,20 @@
 const log = require("./log.function")
 const promiseSpawn = require('./promiseSpawn.function')
 
-module.exports = function install(name, options={}){
+module.exports = function install(name, options={dev:false}){
   const args = ['npm','install',name]
+
+  if(options.dev){
+    args.push('--save-dev')
+  }
+
   log('$',args.join(' '))
+  
   if(options.prefix){
     args.push('--prefix')
     args.push(options.prefix)
   }
+
   return promiseSpawn(args, {log:log})
 }
 

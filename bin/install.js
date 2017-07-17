@@ -81,9 +81,10 @@ class SubInstall{
         resolvePath = path.join(process.cwd(), 'node_modules', name)
       }
 
+      const packName = installCommandToPackageName(name)
       promise = promise.then( ()=>install(installDef, this.config) )
       .then( config=>this.saveName(name, installs[name]) )
-      .then( ()=>new SubInstall( require.resolve(resolvePath), this.config) )
+      .then( ()=>new SubInstall( require.resolve(packName), this.config) )
       .then( SubInstall=>SubInstall.performInstalls() )
     })
 
@@ -105,7 +106,7 @@ class SubInstall{
   saveInstallByName(name){
     const vSplit = name.split('/').pop().split('@')
     let nameOnly = []
-    
+
     if(vSplit.length>1){
       nameOnly = name.split('@')
       nameOnly.pop()
@@ -115,7 +116,7 @@ class SubInstall{
     }
 
     //non-npm install
-    if( name.search(/^[^:]+:/)>=0 ){
+    if( isNpmSiteInstall(name) ){
       nameOnly = name.split('/')
       return this.saveInstallBy(nameOnly.pop(), name, name)
     }
@@ -185,8 +186,14 @@ module.exports.exec = function(args){
     requestedInstalls.forEach(name=>{
       subInstall.config.lock = args.indexOf('--lock')>=0
       //subInstall.config.originalPackage = subInstall.getPack()
-      promise = promise.then( ()=>install.promiseVersion(name) )
-      promise = promise.then( version=>subInstall.performInstallBy(name, version) )
+
+      if( isNpmSiteInstall(name) ){
+        promise = promise.then( ()=>install.promiseVersion(name) )
+        promise = promise.then( version=>subInstall.performInstallBy(name, version) )
+      }else{
+        promise = promise.then( version=>subInstall.performInstallBy(name) )
+      }
+      
       promise = promise.then( ()=>subInstall.saveInstallByName(name) )
       promise = promise.then( ()=>subInstall.savePack() )
     })
@@ -206,4 +213,26 @@ module.exports.exec = function(args){
   }
 
   promise.catch( e=>log.error(e) )
+}
+
+function isNpmSiteInstall(name){
+  return name.search(/^[^:]+:/) >= 0 ? false : true
+}
+
+function installCommandToPackageName(name){
+  let cut = []
+  
+  if( name.match(':') ){
+    cut = name.split(':')
+    cut.shift()//remove github
+    name = cut.join(':')
+    if( name.match('/') ){
+      cut = name.split('/')
+      cut.shift()
+      name = cut.join('/')
+    }
+  }
+  
+
+  return name
 }
