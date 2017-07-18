@@ -8,7 +8,6 @@ const promisePrompt = require('../promisePrompt.function')
 
 const tsConfig = require('./lib/angular/tsconfig.es5.json')
 const tsAotConfig = require('./lib/angular/tsconfig.es5.aot.json')
-const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','angular','typings.d.ts')).toString()
 const defaultAppRoot = path.join('app','src')
 
 function appSrcNeeded(){

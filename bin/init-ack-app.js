@@ -7,7 +7,7 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
-
+const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','angular','typings.d.ts')).toString()
 const appSrcPath = path.join('app','src')
 let indexInputPath = path.join('index.pug')
 
