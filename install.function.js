@@ -1,11 +1,13 @@
 const log = require("./log.function")
 const promiseSpawn = require('./promiseSpawn.function')
 
-module.exports = function install(name, options={dev:false}){
+module.exports = function install(name, options={dev:false, noSave:true}){
   const args = ['npm','install',name]
 
-  if(options.dev){
+  if( options.dev ){
     args.push('--save-dev')
+  }else if( options.noSave || options.noSave==null ){
+    args.push('--no-save')
   }
 
   log('$',args.join(' '))

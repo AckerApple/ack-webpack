@@ -8,7 +8,7 @@ const install = require('../install.function')
 const rootPackPath = process.cwd()
 
 class SubInstall{
-  constructor(packPath, config={originalPackage:null, lock:false, dev:true}){
+  constructor(packPath, config={originalPackage:null, lock:false, dev:false}){
     this.packPath = packPath
     this.config = config
   }
@@ -81,10 +81,14 @@ class SubInstall{
         resolvePath = path.join(process.cwd(), 'node_modules', name)
       }
 
+      const config = Object.assign({dev:this.config.originalPackage}, this.config)
+      const subConfig = Object.assign({}, this.config)
+      subConfig.originalPackage = false
       const packName = installCommandToPackageName(name)
-      promise = promise.then( ()=>install(installDef, this.config) )
+      
+      promise = promise.then( ()=>install(installDef, config) )
       .then( config=>this.saveName(name, installs[name]) )
-      .then( ()=>new SubInstall( require.resolve(packName), this.config) )
+      .then( ()=>new SubInstall( require.resolve(packName), subConfig) )
       .then( SubInstall=>SubInstall.performInstalls() )
     })
 
@@ -92,7 +96,7 @@ class SubInstall{
   }
 
   saveName(name, version){
-    if(!this.config.lock){
+    if(!this.config.lock || !this.config.originalPackage){
       return name
     }
 
@@ -100,6 +104,7 @@ class SubInstall{
     const key = this.getDepKey()
     pack[ key ] = pack[ key ] || {}
     pack[ key ][ name ] = version
+
     this.savePack( pack )
   }
 
@@ -112,23 +117,24 @@ class SubInstall{
       nameOnly.pop()
 
       let version = vSplit.pop()
-      return this.saveInstallBy(nameOnly.join('@'), name, version)
+      return this.saveInstallBy(nameOnly.join('@'), version)
     }
 
     //non-npm install
-    if( isNpmSiteInstall(name) ){
+    if( !isNpmSiteInstall(name) ){
       nameOnly = name.split('/')
-      return this.saveInstallBy(nameOnly.pop(), name, name)
+      return this.saveInstallBy(nameOnly.pop(), name)
     }
 
     return install.promiseVersion(name)
-    .then(version=>this.saveInstallBy(name,name,version))
+    .then(version=>this.saveInstallBy(name,version))
   }
 
-  saveInstallBy(name, install, version){
+  saveInstallBy(name, version){
     const pack = this.getPack()
-    pack.jsDependencies = pack.jsDependencies || {}
-    pack.jsDependencies[ name ] = (version || name)
+    const key = this.getDepKey()
+    pack[key] = pack[key] || {}
+    pack[key][ name ] = (version || name)
   }
 
   savePack(pack){
@@ -142,18 +148,15 @@ class SubInstall{
 module.exports.exec = function(args){
   args = args || process.argv
 
-  const subInstall = new SubInstall( rootPackPath )
+  const depKeyArgIndex = args.indexOf('--depkey')
+  const subInstall = new SubInstall(rootPackPath,{
+    lock: args.indexOf('--lock')>=0,
+    originalPackage: true,
+    depKey: depKeyArgIndex>=0 ? args[ depKeyArgIndex+1 ] : 'jsDependencies'
+  })
+  
   let promise = ackP.resolve()
   log('Reading Package', subInstall.getPackPath())
-
-  if(args.indexOf('--lock')>=0){
-    subInstall.config.lock = true
-  }
-
-  const depKeyArgIndex = args.indexOf('--depkey')
-  if(depKeyArgIndex>0){
-    subInstall.config.depKey = args[ depKeyArgIndex+1 ]
-  }
 
   let out = ''
   const outArgIndex = args.indexOf('--out')
@@ -175,18 +178,10 @@ module.exports.exec = function(args){
     .catch('ENOENT', e=>null)
   }
 
-  const requestedInstalls = []
-
-  for(let x=3; x < args.length; ++x){
-    if(args[x].substring(0, 2)=='--')break;
-    requestedInstalls.push( args[x] )
-  }
+  const requestedInstalls = getRequestedInstalls(args)
 
   if( requestedInstalls.length ){
     requestedInstalls.forEach(name=>{
-      subInstall.config.lock = args.indexOf('--lock')>=0
-      //subInstall.config.originalPackage = subInstall.getPack()
-
       if( isNpmSiteInstall(name) ){
         promise = promise.then( ()=>install.promiseVersion(name) )
         promise = promise.then( version=>subInstall.performInstallBy(name, version) )
@@ -195,11 +190,12 @@ module.exports.exec = function(args){
       }
       
       promise = promise.then( ()=>subInstall.saveInstallByName(name) )
-      promise = promise.then( ()=>subInstall.savePack() )
+      //promise = promise.then( ()=>subInstall.savePack() )
     })
 
-    if( args.indexOf('--no-save')<0 ){
-      promise = promise.then( ()=>subInstall.savePack(subInstall.config.originalPackage) )
+    const save = args.indexOf('--no-save') < 0
+    if( save ){
+      promise = promise.then( ()=>subInstall.savePack() )
     }
   }else{  
     promise = promise.then( ()=>subInstall.performInstalls() )
@@ -235,4 +231,15 @@ function installCommandToPackageName(name){
   
 
   return name
+}
+
+function getRequestedInstalls(args){
+  const requestedInstalls = []
+
+  for(let x=3; x < args.length; ++x){
+    if(args[x].substring(0, 2)=='--')break;
+    requestedInstalls.push( args[x] )
+  }
+
+  return requestedInstalls
 }
