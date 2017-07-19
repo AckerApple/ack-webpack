@@ -7,9 +7,13 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
-const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','angular','typings.d.ts')).toString()
 const appSrcPath = path.join('app','src')
 let indexInputPath = path.join('index.pug')
+
+//config templates
+const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','ack-app','typings.d.ts')).toString()
+const tsConfig = require('./lib/ack-app/tsconfig.es5.json')
+const tsAotConfig = require('./lib/ack-app/tsconfig.es5.aot.json')
 
 function runPrompts(){
   const schema = [{
@@ -35,12 +39,12 @@ function runPrompts(){
 function getIndexingSchema(){
   const schema = [{
     description:'Create default tsconfig.json?',
-    name:'createTsConfig',
+    name:'writeTsConfig',
     default:'yes',
     ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.json') )
   },{
     description:'Create default tsconfig.aot.json?',
-    name:'createTsAotConfig',
+    name:'writeTsAotConfig',
     default:'yes',
     ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.aot.json') )
   },{

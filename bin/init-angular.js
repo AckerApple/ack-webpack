@@ -6,44 +6,10 @@ const fs = require('fs')
 const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 
-const tsConfig = require('./lib/angular/tsconfig.es5.json')
-const tsAotConfig = require('./lib/angular/tsconfig.es5.aot.json')
 const defaultAppRoot = path.join('app','src')
-
-function appSrcNeeded(){
-  const typings = promisePrompt.prompt.history('createTypings').value
-  const paramTsConfig = promisePrompt.prompt.history('paramTsConfig').value
-  const paramTsAotConfig = promisePrompt.prompt.history('paramTsAotConfig').value
-  
-  return promisePrompt.isLikeTrue(typings)
-  || promisePrompt.isLikeTrue(paramTsConfig)
-  || promisePrompt.isLikeTrue(paramTsAotConfig)
-}
 
 function runPrompts(){
   const schema = []
-  /*[{
-    description:'Param tsconfig.json?',
-    name:'paramTsConfig',
-    default:'yes'
-  },{
-    description:'Param tsconfig.aot.json?',
-    name:'paramTsAotConfig',
-    default:'yes'
-  },{
-    description:'Param typings.d.ts?',
-    name:'createTypings',
-    default:'yes'
-  },{
-    description:'App root src location?',
-    name:'appRoot',
-    default:defaultAppRoot,
-    ask:appSrcNeeded
-  },{
-    description:'Would you like to choose angular packages to install?',
-    name:'performInstalls',
-    default:'yes'
-  }]*/
 
   schema.push.apply(schema, getInstallSchema())
 
