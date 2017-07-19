@@ -372,8 +372,8 @@ function processPrompts(results){
   }
 
 
-  // build
-  if( promisePrompt.isLikeTrue(results.manageBuildScript) ){
+  const build = promisePrompt.isLikeTrue(results.manageBuildScript)
+  if( build ){
     savePack = true
     const buildArray = (packHelp.getScript("build") || 'npm-run-all -s').split(' ')
     const builders = [
@@ -400,7 +400,8 @@ function processPrompts(results){
     paramNgCompilers = true
   }
 
-  if( promisePrompt.isLikeTrue(results.manageWatchScript) ){
+  const watch = promisePrompt.isLikeTrue(results.manageWatchScript)
+  if( watch ){
     savePack = true
 
     const watchArray = (packHelp.getScript("watch") || 'npm-run-all --parallel').split(' ')
@@ -428,6 +429,12 @@ function processPrompts(results){
   //AFTER package scripting
   if( savePack ){
     promise = promise.then( ()=>packHelp.save() )
+  }
+
+  if( (build || watch) && !promiseSpawn.isModuleInstalled('npm-run-all') ){
+    promise = promise
+    .then( ()=>log('To handle running multiple scripts across any device, npm-run-all will be installed') )
+    .then( ()=>promiseSpawn.installPacks(['npm-run-all']) )
   }
 
   if( paramNgCompilers ){
