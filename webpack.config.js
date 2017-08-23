@@ -134,15 +134,16 @@ if(sourceMap){
 }
 
 
-/*config.plugins.push(
+config.plugins.push(
   new webpack.DefinePlugin({
     'process.env': {
-      'ENV': 'production'
+      'ENV': JSON.stringify(production ? 'production' : process.env.NODE_ENV)
     }
   })
-)*/
+)
 
 if(production || minify) {
+  config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
   config.plugins.push(new webpack.optimize.DedupePlugin());
   //config.plugins.push(new webpack.NoErrorsPlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
@@ -159,11 +160,15 @@ if(production || minify) {
     //   unused: false
     // }, // debug
     // comments: true, //debug
+    parallel:true,
+    warnings:true,
     beautify: false, //prod
     mangle: { screw_ie8 : true }, //prod
     compress: { screw_ie8: true }, //prod
     comments: false //prod
   }));
+
+  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin())
 }
 
 module.exports = config
