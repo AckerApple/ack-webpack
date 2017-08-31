@@ -102,7 +102,8 @@ if(supportTs){
   }*/
 
   if(tsConfigFilePath){
-    tsLoader.options.configFileName = tsConfigFilePath
+    //tsLoader.options.configFileName = tsConfigFilePath//ts-loader said this is deprecated
+    tsLoader.options.configFile = tsConfigFilePath
   }
 
   loaders.push(tsLoader)
