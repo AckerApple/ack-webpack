@@ -144,7 +144,9 @@ config.plugins.push(
 )
 
 if(production || minify) {
-  config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+  if( webpack.optimize.ModuleConcatenationPlugin ){
+    config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+  }
   config.plugins.push(new webpack.optimize.DedupePlugin());
   //config.plugins.push(new webpack.NoErrorsPlugin());
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({

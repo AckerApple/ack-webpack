@@ -3,15 +3,16 @@ A code bundler that drastically reduces setup time by offering an init prompt of
 
 > NOTE: This package does not depend on webpack and is completely useful without ever installing webpack
 
-A 4 Step Process
+Boot a project in 4 easy steps
 - install
 - init
-- install jsDependencies
-- build/watch your code
+- choose dependencies
+- build/watch code
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [4 STEPS TO BOOT PROJECT](#4-steps-to-boot-project)
 - [Installation](#installation)
   - [Optional Global Install](#optional-global-install)
 - [Initialization](#initialization)
@@ -38,6 +39,44 @@ This package greatly reduces common project setup times for the task of bundling
 - Includes sophisticated CLI init commands to help get a project going
   - Somewhat experimental and needs refinements for more complicated tasks
 - Includes sophisticated CLI install commands to help included jsDependencies that are seperate from devDependencies
+
+## 4 STEPS TO BOOT PROJECT
+Do NOT want to read? Think you got it? Try this short-hand guide
+
+> It's Expected That:
+>> - You have created a folder for your project
+>> - Have a terminal command prompt opened and targeting your project folder
+>> - Know the basics of `npm init` and package.json
+
+In a command terminal, in the folder of your new project, run the following 4 commands:
+
+**Command 1**: Answer the npm init questions to create a package.json file
+```bash
+$ npm init
+```
+
+**Command 2**: Install ack-webpack so it can start helping boot your project structure
+```bash
+$ npm install ack-webpack --save-dev
+```
+
+**Command 3**: Run the most basic ack-webpack command to answer questions about your project
+```bash
+$ npm run ack-webpack -- init
+```
+
+**Command 4**: `(optional)` Build your project structure depending on what tools you need
+
+> The previous step commands are ones almost everyone will use. The following are only to be used if they apply to your project
+
+- `$ npm run ack-webpack -- init:fontawesome`
+  - Asks questions to initialize a great icon with font/css files output into your assets folder
+- `$ npm run ack-webpack -- init:angular`
+  - Asks question to installl dependencies commonly needed in an Angular project
+- `$ npm run ack-webpack -- init:ack-app`
+  - Asks question to initialize an Angular with the same structure as Acker Apple uses
+
+> The rest of the documentation, expands and explains the above short-hand guide
 
 ## Installation
 Install ack-webpack into your project

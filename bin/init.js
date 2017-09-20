@@ -7,7 +7,7 @@ const log = require("../log.function")
 //const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader','core-js']
 const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
-const pugPacks = ['pug','pug-loader']
+const pugPacks = ['pug','pug-loader','pug-cli']
 const webPacks = ['webpack']
 
 const promisePrompt = require('../promisePrompt.function')

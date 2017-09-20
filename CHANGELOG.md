@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.50] - 2017-09-20
+### Fixed
+- pug-cli was not apart of the pug installs
+
 ## [1.1.42] - 2017-07-17
 ### Added
 - init:ts-dist
