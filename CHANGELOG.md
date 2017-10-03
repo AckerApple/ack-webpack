@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.51] - 2017-09-20
+### Added
+- init:angular:test
+
 ## [1.1.50] - 2017-09-20
 ### Fixed
 - pug-cli was not apart of the pug installs

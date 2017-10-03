@@ -7,6 +7,7 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
+const ackPackHelp = new (require('./ack-package.help'))()
 const appSrcPath = path.join('app','src')
 let indexInputPath = path.join('index.pug')
 
@@ -30,13 +31,13 @@ function runPrompts(){
     ask: ()=>getBuildPath() && false
   }]
 
-  schema.push.apply(schema, getIndexingSchema())
+  schema.push.apply(schema, getAssetSchema())
   schema.push.apply(schema, getScriptsSchema())
 
   return promisePrompt(schema)
 }
 
-function getIndexingSchema(){
+function getAssetSchema(){
   const schema = [{
     description:'Create default tsconfig.json?',
     name:'writeTsConfig',
@@ -371,7 +372,6 @@ function processPrompts(results){
     })
   }
 
-
   const build = promisePrompt.isLikeTrue(results.manageBuildScript)
   if( build ){
     savePack = true
@@ -504,6 +504,7 @@ function processPrompts(results){
   /* end : after run scripts */
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init:ack-app", results).save() )
 }
 
 function processTsResults(results){

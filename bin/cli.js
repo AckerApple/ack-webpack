@@ -7,6 +7,7 @@ switch(firstArg){
   
   case 'init:font-awesome':require('./init-font-awesome');break
   case 'init:angular':require('./init-angular');break
+  case 'init:angular:test':require('./init-angular-test');break
   case 'init:ack-angular':require('./init-ack-angular');break
   case 'init:ack-app':require('./init-ack-app');break
   case 'init:ts-dist':require('./init-ts-dist');break

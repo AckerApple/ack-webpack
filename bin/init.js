@@ -3,6 +3,7 @@ const install = require('../install.function')
 const path = require('path')
 const fs = require('fs')
 const log = require("../log.function")
+const ackPackHelp = new (require('./ack-package.help'))()
 
 //const jsonPacks = ['json-loader']
 const typesPacks = ['typescript','ts-loader','core-js']
@@ -63,6 +64,7 @@ function processPrompts(results){
   }
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init", results).save() )
 }
 
 function runTransPrompt(){

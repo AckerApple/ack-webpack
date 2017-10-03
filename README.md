@@ -24,6 +24,7 @@ Boot a project in 4 easy steps
     - [install:js](#installjs)
   - [Project Init Commands](#project-init-commands)
     - [init:angular](#initangular)
+    - [init:angular:test](#initangulartest)
     - [init:font-awesome](#initfont-awesome)
     - [init:ack-angular](#initack-angular)
     - [init:ack-app](#initack-app)
@@ -200,6 +201,15 @@ A series of questions will help lead to a faster Angular project bootup
 
 ```
 npm run ack-webpack -- init:angular
+```
+
+#### init:angular:test
+A series of questions will help lead to a faster setup of an Angular test enviroment
+
+> under contruction. Currently, assumes too much like that files are in /src folder
+
+```
+npm run ack-webpack -- init:angular:test
 ```
 
 #### init:font-awesome

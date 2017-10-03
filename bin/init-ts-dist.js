@@ -7,7 +7,7 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
-
+const ackPackHelp = new (require('./ack-package.help'))()
 const distSrcPath = path.join('src')
 let indexInputPath = path.join('index.pug')
 
@@ -92,6 +92,7 @@ function processPrompts(results){
   }
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init:ts-dist", results).save() )
 }
 
 runPrompts()

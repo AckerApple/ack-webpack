@@ -5,6 +5,7 @@ const path = require('path')
 const fs = require('fs')
 const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
+const ackPackHelp = new (require('./ack-package.help'))()
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
 const assetDefaultPath = path.join('app','www','assets','fonts','font-awesome')
@@ -97,6 +98,7 @@ function processPrompts(results){
   }
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init:font-awesome", results).save() )
 }
 
 runPrompts()

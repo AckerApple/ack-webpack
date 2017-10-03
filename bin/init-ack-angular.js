@@ -7,7 +7,7 @@ const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
-
+const ackPackHelp = new (require('./ack-package.help'))()
 const prefxFilePath = path.join('app','src','prefx.ts')
 
 function runPrompts(){
@@ -100,6 +100,7 @@ function processPrompts(results){
   /* end : after run scripts */
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init:ack-angular", results).save() )
 }
 
 runPrompts()

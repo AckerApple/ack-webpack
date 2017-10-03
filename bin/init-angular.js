@@ -5,7 +5,7 @@ const path = require('path')
 const fs = require('fs')
 const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
-
+const ackPackHelp = new (require('./ack-package.help'))()
 const defaultAppRoot = path.join('app','src')
 
 function runPrompts(){
@@ -181,6 +181,7 @@ function processPrompts(results){
   promise = performInstalls(results)
 
   return promise
+  .then( ()=>ackPackHelp.updatePrompt("init:angular", results).save() )
 }
 
 
