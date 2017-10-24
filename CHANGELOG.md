@@ -1,6 +1,9 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.52] - UNRELEASED
+- add noscript to ack-angular/index.pug
+
 ## [1.1.51] - 2017-09-20
 ### Added
 - init:angular:test
