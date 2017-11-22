@@ -214,6 +214,7 @@ function paramTestFolder(appRoot){
 function writeAngularCliJson(appRoot){
   const filePath = path.join(appRoot,'.angular-cli.json')
   const exists = fs.existsSync( filePath )
+  
   if(exists)return
   
   const config = require('./lib/angular-test/.angular-cli.json')
@@ -227,8 +228,10 @@ function writeKarmaConfig(appRoot){
   const exists = fs.existsSync( filePath )
   if(exists)return
   
-  const config = require('./lib/angular-test/karma.conf.js')
-  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
+  const orgKarmaFile = path.join(__dirname,'lib','angular-test','karma.conf.js')
+  const karmaConfig = fs.readFileSync( orgKarmaFile ).toString()
+  
+  fs.writeFileSync(filePath, karmaConfig)
   log('created',filePath)
 }
 
