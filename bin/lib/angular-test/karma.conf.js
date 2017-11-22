@@ -30,7 +30,8 @@ if( browserArg=='PhantomJS' ){
   setup.plugins.push( require('karma-coverage-istanbul-reporter') )
 }else{
   setup.browsers.push('Chrome')
-  setup.customLaunchers = require('./test-tools/sauce-browsers.js').customLaunchers()
+  //setup.customLaunchers = require('./test-tools/sauce-browsers.js').customLaunchers()
+  setup.customLaunchers = require('./test/sauce-browsers.js').customLaunchers()
 }
 
 setup.plugins.push( require('@angular/cli/plugins/karma') )
