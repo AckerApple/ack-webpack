@@ -175,8 +175,12 @@ function processAssetPrompt(results){
 }
 
 function paramTestFolder(appRoot){
-  const copyPath = path.join(__dirname,'lib','angular-test','test')
+  //get ack-webpack built-in tools path
+  const copyPath = path.join(__dirname,'lib','angular-test','test-tools')
+
+  //get paste test-tools path
   const folderPath = path.join(appRoot,'test')
+  
   const exists = fs.existsSync( folderPath )
   if(!exists){
     return ackPath(copyPath).copyTo(folderPath)

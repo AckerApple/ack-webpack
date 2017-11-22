@@ -1,6 +1,10 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.1.52] - 2017-11-22
+### Fixed
+- had needed folder named "test" but .gitignore'd it so renamed to "test-tools"
+
 ## [1.1.51] - 2017-09-20
 ### Added
 - init:angular:test
