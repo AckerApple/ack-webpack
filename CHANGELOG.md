@@ -1,14 +1,13 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
-<<<<<<< HEAD
+## [1.2.0] - 2017-12-14
+- Angular 4 commands geared more towards Angular 5 now
+
 ## [1.1.52] - 2017-11-22
 ### Fixed
 - had needed folder named "test" but .gitignore'd it so renamed to "test-tools"
-=======
-## [1.1.52] - UNRELEASED
 - add noscript to ack-angular/index.pug
->>>>>>> 8c0dfce2ed96270f51e08254e4f2cf96c5a881c5
 
 ## [1.1.51] - 2017-09-20
 ### Added

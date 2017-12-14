@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "inlineSources": true,
+    "inlineSources": false,
     "emitDecoratorMetadata": true,
-    "baseUrl": ".",
     "experimentalDecorators": true,
     "noEmitHelpers": false,
     "allowJs": true,

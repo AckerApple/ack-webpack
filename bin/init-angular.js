@@ -135,9 +135,9 @@ function getInstallSchema(){
 
   if( !promiseSpawn.isModuleInstalled('@angular/http') ){
     schema.push({
-      description:'Intall @angular/http?',
+      description:'Intall @angular/http? (use @angular/common/http)',
       name:'@angular/http',
-      default:'yes',
+      default:'no',
       ask:isPerformInstalls
     })
   }
