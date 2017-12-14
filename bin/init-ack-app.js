@@ -65,10 +65,10 @@ function getAssetSchema(){
 
   //index.aot.ts
   schema.push({
-    description:'Create index.aot.ts',
-    name:'createIndexAotTs',
+    description:'Create index.prod.ts',
+    name:'createIndexProdTs',
     default:'yes',
-    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'index.ts') )
+    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'index.prod.ts') )
   })
 
   //app.module.ts
@@ -324,7 +324,7 @@ function processPrompts(results){
     
     packHelp.setScript(
       "build:js",
-      "node --max-old-space-size=8192 ./node_modules/ack-webpack/bin/cli "+path.join(myAppSrcPath,"index.aot.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json"),
+      "node --max-old-space-size=8192 ./node_modules/ack-webpack/bin/cli "+path.join(myAppSrcPath,"index.prod.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json"),
       "Builds one TypeScript source file into a final www output file. Node memory has been increased to cover large app builds"
     )
     
@@ -464,7 +464,7 @@ function processPrompts(results){
   }
 
   //build index.aot.ts
-  if(  promisePrompt.isLikeTrue(results.createIndexAotTs) ){
+  if(  promisePrompt.isLikeTrue(results.createIndexProdTs) ){
     promise = promise.then(()=>{
       const writeFile = path.join(getAppSrcPath(), 'index.aot.ts')
       log('Creating '+writeFile+'...')
