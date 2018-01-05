@@ -1,6 +1,9 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.2.2] - 2018-01-05
+- Added additional extension to webpack config
+
 ## [1.2.0] - 2017-12-14
 - Angular 4 commands geared more towards Angular 5 now
 

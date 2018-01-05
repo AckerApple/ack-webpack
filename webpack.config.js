@@ -11,7 +11,10 @@ const production = process.argv.indexOf('--production')>=0
 const sourceMap = process.argv.indexOf('--skip-source-maps')<0 && !production
 const minify = process.argv.indexOf('--minify')>=0 || production
 
-const extensions = ['.webpack.js', '.web.js']
+const extensions = [
+  //'.webpack.js', '.web.js',
+  '.js','.json'
+]
 const loaders = []
 let tsConfigFilePath = ''
 
