@@ -21,11 +21,12 @@ function runPrompts(){
     default:'yes'
   }]
 
-  schema.push.apply(schema, getFxPromptSchema())
+  //schema.push.apply(schema, getFxPromptSchema())
 
   return promisePrompt(schema)
 }
 
+/*
 function getFxPromptSchema(){
   const schema = []
 
@@ -53,7 +54,7 @@ function getFxPromptSchema(){
   })
 
   return schema
-}
+}*/
 
 function processPrompts(results){
   let promise = Promise.resolve()
@@ -61,6 +62,7 @@ function processPrompts(results){
   if(!results)return promise;
 
   /* ack-angular-fx scripting */
+    /*
     const addFxScripts = results.addFxScripts!=null && promisePrompt.isLikeTrue(results.addFxScripts)
     if(addFxScripts){
       const prefxFilePath = results.prefxFilePath
@@ -77,6 +79,7 @@ function processPrompts(results){
       .then(()=>log('Saving package.json...'))
       .then(()=>packHelp.save())
     }
+    */
 
     /* installs : must come after package.json save */
       if( promisePrompt.isLikeTrue(results.install) ){
@@ -92,11 +95,12 @@ function processPrompts(results){
       }
     /* end: installs */
 
+    /*
     if( promisePrompt.isLikeTrue(results.runPrefx) ){
       promise = promise
       .then(()=>log('Creating ack-angular-fx prefx.ts file...'))
       .then( ()=>promiseSpawn(['npm','run','compile:prefx'], {log:log}) )
-    }
+    }*/
   /* end : after run scripts */
 
   return promise

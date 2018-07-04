@@ -6,9 +6,9 @@ const log = require("../log.function")
 const ackPackHelp = new (require('./ack-package.help'))()
 
 //const jsonPacks = ['json-loader']
-const typesPacks = ['typescript','ts-loader','core-js']
+const typesPacks = ['typescript','core-js']//,'ts-loader'
 const babelPacks = ['babel-core','babel-preset-es2015','babel-loader']
-const pugPacks = ['pug','pug-loader','pug-cli']
+const pugPacks = ['pug','pug-cli']//,'pug-loader'
 const webPacks = ['webpack']
 
 const promisePrompt = require('../promisePrompt.function')
@@ -112,18 +112,22 @@ function runTypescriptPrompt(){
 }
 
 function installTypescript(options){
+  log('Installing typescript...')
   return promiseSpawn.installPacks(typesPacks)
 }
 
 function installBabel(){
+  log('Installing babel...')
   return promiseSpawn.installPacks(babelPacks)
 }
 
 function installPug(){
+  log('Installing pug...')
   return promiseSpawn.installPacks(pugPacks)
 }
 
 function installWebpack(){
+  log('Installing webpack...')
   return promiseSpawn.installPacks(webPacks)
 }
 

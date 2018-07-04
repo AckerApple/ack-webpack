@@ -28,7 +28,7 @@ function runPrompts(){
   },{
     description:'Build output folder path',
     name:'buildPath',
-    default: ()=>path.join(getAppSrcPath(), '../', 'www')
+    default: ()=>path.join(getAppSrcPath(), '../', 'dist/www')
   },{
     description:'NEVER RUNS, just captures buildPath value to memory incase too many questions cause it to be lossed',
     name:'buildPathMemory',
@@ -51,7 +51,7 @@ function getAssetSchema(){
     description:'Create default angular.json?',
     name:'writeAngularJson',
     default:'yes',
-    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'angular.json') )
+    ask:()=>!fs.existsSync( path.join(process.cwd(), 'angular.json') )
   }/*,{
     description:'Create default tsconfig.aot.json?',
     name:'writeTsAotConfig',
@@ -141,12 +141,13 @@ function getScriptsSchema(){
       ask: isPerformScripts
     })
 
-    schema.push({
+    //not sure if needed 7/4/18
+    /*schema.push({
       description:'Enter index.js file path',
       name:'assetIndexFilePath',
-      default: ()=>path.join( getBuildPath(), 'assets','scripts','index.js'),
+      default: ()=>path.join(getBuildPath(), 'assets','scripts','index.js'),
       ask: ()=>isPerformScripts() && promisePrompt.historyValueLikeTrue('addBuildJs')
-    })
+    })*/
 
     if( !packHelp.scriptDefined("watch:js") ){
       schema.push({
@@ -177,7 +178,7 @@ function getScriptsSchema(){
     schema.push({
       description:'Output SASS css file path',
       name:'sassOutputPath',
-      default:(r)=>path.join( getBuildPath(), 'assets', 'styles', 'styles.css' ),
+      default:(r)=>path.join( getAppSrcPath(), 'assets', 'styles', 'styles.css' ),
       ask: ()=>promisePrompt.historyValueLikeTrue('addScripts') && promisePrompt.historyValueLikeTrue('addBuildCss')
     })    
   }
@@ -274,11 +275,17 @@ function processPrompts(results){
         "pug "+results.indexInputPath+" --out "+results.buildPath,
         "Casts index.pug layout into index.html template to act as app entry file"
       )
+
+      packHelp.setScript(
+        "watch:index",
+        "npm run build:index -- --watch",
+        "Casts index.pug layout into index.html template to act as app entry file"
+      )
       
       if( promisePrompt.isLikeTrue(results.createIndex)){
         promise = promise.then(()=>{
           log('Creating '+results.indexInputPath+'...')
-          const html = fs.readFileSync( path.join(__dirname,'lib','ack-angular','index.pug') ).toString()
+          const html = fs.readFileSync( path.join(__dirname,'lib','ack-app','index.pug') ).toString()
           const Path = ackPath(results.indexInputPath)
 
           return Path.paramDir()
@@ -287,7 +294,6 @@ function processPrompts(results){
       }
 
     }
-
   /* end build:index scripting */
 
   // compile:templates
@@ -296,13 +302,13 @@ function processPrompts(results){
 
     packHelp.setScript(
       "compile:templates",
-      "ack-pug-bundler " + path.join(myAppSrcPath,"components","pugs") + " " + path.join(myAppSrcPath,"components","templates") + "  --outType ts --oneToOne",
+      "ack-pug-bundler " + path.join(myAppSrcPath,"components") + " " + path.join(myAppSrcPath,"components") + " --outFileExt template.ts --outType ts --oneToOne",
       "Casts pugs folder, that has layout files like template.pug, into TypeScript compatible template.pug.ts files"
     )
 
     if( !packHelp.scriptDefined('watch:templates') ){
-      ackPath(myAppSrcPath).join("components","pugs").paramDir()
-      ackPath(myAppSrcPath).join("components","templates").paramDir()
+      //ackPath(myAppSrcPath).join("components","pugs").paramDir()
+      //ackPath(myAppSrcPath).join("components","templates").paramDir()
       packHelp.setScript(
         "watch:templates",
         "npm run compile:templates -- --watch",
@@ -399,7 +405,7 @@ function processPrompts(results){
     .then( defined=>{
       if(defined)return
       log('Created empty '+results.sassInputPath+' file')
-      return Path.writeFile( ackPath( __dirname ).join('lib','ack-angular','styles.scss').File().sync().readAsString() )
+      return Path.writeFile( ackPath( __dirname ).join('lib','ack-app','styles.scss').File().sync().readAsString() )
     })
   }
 
@@ -439,8 +445,10 @@ function processPrompts(results){
     const watchers = [
       //"compile:aot",//ensure watched AoT files exist
       "copy:fonts",//if fonts were changed before watch, they will be rendered here
-      "compile:templates",//if templates were changed before watch, they will be rendered here
+      "build:index",//if index.pug was changed before watch, it will be rendered here
+      "compile:templates",//if templates was changed before watch, they will be rendered here
       "watch:css",
+      "watch:index",
       "watch:templates",
       "watch:js"
     ]
@@ -486,7 +494,7 @@ function processPrompts(results){
     promise = promise.then(()=>{
       const writeFile = path.join(getAppSrcPath(), 'index.ts')
       log('Creating '+writeFile+'...')
-      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-angular','index.ts') ).toString()
+      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-app','index.ts') ).toString()
       const Path = ackPath(writeFile)
 
       return Path.paramDir()
@@ -494,26 +502,25 @@ function processPrompts(results){
     })
   }
 
-  //build index.aot.ts
-  /*
+  //build index.prod.ts
   if(  promisePrompt.isLikeTrue(results.createIndexProdTs) ){
     promise = promise.then(()=>{
-      const writeFile = path.join(getAppSrcPath(), 'index.aot.ts')
+      const writeFile = path.join(getAppSrcPath(), 'index.prod.ts')
       log('Creating '+writeFile+'...')
-      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-angular','index.aot.ts') ).toString()
+      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-app','index.prod.ts') ).toString()
       const Path = ackPath(writeFile)
 
       return Path.paramDir()
       .then( ()=>Path.writeFile(contents) )
     })
-  }*/
+  }
 
   //build app.module.ts
   if(  promisePrompt.isLikeTrue(results.createAppModuleTs) ){
     promise = promise.then(()=>{
       const writeFile = path.join(getAppSrcPath(), 'app.module.ts')
       log('Creating '+writeFile+'...')
-      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-angular','app.module.ts') ).toString()
+      const contents = fs.readFileSync( path.join(__dirname,'lib','ack-app','app.module.ts') ).toString()
       const Path = ackPath(writeFile)
 
       return Path.paramDir()
@@ -590,7 +597,8 @@ function writeTsConfig(appRoot, options){
 }
 
 function writeAngularJson(appRoot, options){
-  const filePath = path.join(packHelp.getFolderPath(),'angular.json')
+  const folderPath = packHelp.getFolderPath()
+  const filePath = path.join(folderPath,'angular.json')
   const exists = fs.existsSync( filePath )
   if(exists)return
   const config = angularConfig

@@ -22,7 +22,7 @@ module.exports = class JsonHelp{
   }
 
   getFolderPath(){
-    return path.join(this.packJson,"../")
+    return path.join(this.packPath,"../")
   }
 
   save(){

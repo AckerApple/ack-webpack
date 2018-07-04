@@ -20,13 +20,11 @@
                 "glob": "**/*",
                 "input": "app/src/assets",
                 "output": "/"
-              },
-              {
+              },{
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/css",
                 "output": "/assets/css/font-awesome/css"
-              },
-              {
+              },{
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/assets/css/font-awesome/webfonts"
@@ -95,6 +93,184 @@
       "sourceRoot": "app/e2e",
       "projectType": "application"
     },
+    "ios": {
+      "root": "app/src",
+      "sourceRoot": "app/src/ios",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "app/dist/ios/www",
+            "index": "app/src/ios/index.html",
+            "main": "app/src/ios/index.ts",
+            "tsConfig": "app/src/ios/tsconfig.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              }
+            ],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production":{}
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ios:build"
+          },
+          "configurations": {}
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ios:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "app/src/ios/undefined",
+            "karmaConfig": "karma.conf.js",
+            "scripts": [],
+            "styles": [],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "ios-e2e": {
+      "root": "app/src",
+      "sourceRoot": "app/src/e2e",
+      "projectType": "application"
+    },
+    "android": {
+      "root": "app/src",
+      "sourceRoot": "app/src/android",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "app/dist/android/www",
+            "index": "app/src/android/index.html",
+            "main": "app/src/android/index.ts",
+            "tsConfig": "app/src/android/tsconfig.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              }
+            ],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production":{}
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "android:build"
+          },
+          "configurations": {}
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "android:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "app/src/android/undefined",
+            "karmaConfig": "karma.conf.js",
+            "scripts": [],
+            "styles": [],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "android-e2e": {
+      "root": "app/src",
+      "sourceRoot": "app/src/e2e",
+      "projectType": "application"
+    },
     "test": {
       "root": "",
       "sourceRoot": "test",
@@ -148,6 +324,98 @@
     "test-e2e": {
       "root": "",
       "sourceRoot": "e2e",
+      "projectType": "application"
+    },
+    "stage": {
+      "root": "app",
+      "sourceRoot": "app/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "app/dist/stage",
+            "index": "app/src/index.html",
+            "main": "app/src/index.stage.ts",
+            "tsConfig": "app/src/tsconfig.stage.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              },
+              "app/src/WEB-INF/**"
+            ],
+            "styles": [],
+            "scripts": []
+          },
+          "configurations": {
+            "production":{}
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "stage:build"
+          },
+          "configurations": {
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "stage:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "app/src/undefined",
+            "karmaConfig": "karma.conf.js",
+            "scripts": [],
+            "styles": [],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "app/src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/css",
+                "output": "/assets/css/font-awesome/css"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/css/font-awesome/webfonts"
+              },
+              "app/src/WEB-INF/**"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "stage-e2e": {
+      "root": "app",
+      "sourceRoot": "app/e2e",
       "projectType": "application"
     },
     "dev": {

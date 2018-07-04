@@ -133,14 +133,14 @@ function getInstallSchema(){
     })
   }
 
-  if( !promiseSpawn.isModuleInstalled('@angular/http') ){
+  /*if( !promiseSpawn.isModuleInstalled('@angular/http') ){
     schema.push({
       description:'Intall @angular/http? (use @angular/common/http)',
       name:'@angular/http',
       default:'no',
       ask:isPerformInstalls
     })
-  }
+  }*/
 
   return schema
 }
@@ -202,61 +202,73 @@ function performInstalls(results){
   if(promisePrompt.isLikeTrue(results['reflect-metadata'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['reflect-metadata']) )
+    .then(()=>log('Installing reflect-metadata...'))
   }
 
   if(promisePrompt.isLikeTrue(results['rxjs'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['rxjs']) )
+    .then(()=>log('Installing rxjs...'))
   }
 
   if(promisePrompt.isLikeTrue(results['zone.js'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['zone.js']) )
+    .then(()=>log('Installing rxjs...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/core'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/core']) )
+    .then(()=>log('Installing @angular/core...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/common'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/common']) )
+    .then(()=>log('Installing @angular/common...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/compiler'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/compiler']) )
+    .then(()=>log('Installing @angular/compiler...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/compiler-cli'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/compiler-cli']) )
+    .then(()=>log('Installing @angular/compiler-cli...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/platform-browser'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/platform-browser']) )
+    .then(()=>log('Installing @angular/platform-browser...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/platform-browser-dynamic'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/platform-browser-dynamic']) )
+    .then(()=>log('Installing @angular/platform-browser-dynamic...'))
   }
 
-  if(promisePrompt.isLikeTrue(results['@angular/http'])){
+  /*if(promisePrompt.isLikeTrue(results['@angular/http'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/http']) )
-  }
+    .then(()=>log('Installing @angular/http...'))
+  }*/
 
   if(promisePrompt.isLikeTrue(results['@angular/router'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/router']) )
+    .then(()=>log('Installing @angular/router...'))
   }
 
   if(promisePrompt.isLikeTrue(results['@angular/animations'])){
     ++installCount
     promise = promise.then( ()=>promiseSpawn.installPacks(['@angular/animations']) )
+    .then(()=>log('Installing @angular/animations...'))
   }
 
   if(installCount==0){

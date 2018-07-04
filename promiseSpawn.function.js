@@ -84,6 +84,7 @@ module.exports.installPacks = function(packs, options){
 
 function installer(name, options){
   const args = ['npm','install','--save-dev',name]
+  //console.log(args)
   return promiseSpawn(args, options)
 }
 module.exports.installer = installer
