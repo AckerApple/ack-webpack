@@ -1,6 +1,6 @@
 {
   "name": "ack-webpack",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A code bundler that drastically reduces setup time by offering an init prompt of project setup questions and includes a fantastic browser reloader.",
   "main": "webpack.config.js",
   "scripts": {

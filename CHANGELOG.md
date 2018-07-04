@@ -1,6 +1,9 @@
 # ack-webpack - Change Log
 All notable changes to this project will be documented here.
 
+## [1.3.0] - 2018-(UNRELEASED)
+- Tailored for Angular 6 and ack-apps
+
 ## [1.2.2] - 2018-01-05
 - Added additional extension to webpack config
 

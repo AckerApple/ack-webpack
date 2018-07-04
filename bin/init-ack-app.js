@@ -1,20 +1,24 @@
+const path = require('path')
+
+//Very important paths
+const appSrcPath = path.join('app','src')
+
 const ackPath = require('ack-path')
 const promiseSpawn = require('../promiseSpawn.function')
 const install = require('../install.function')
-const path = require('path')
 const fs = require('fs')
 const log = require("../log.function")
 const promisePrompt = require('../promisePrompt.function')
 const PackHelp = require('./package.help.js')
 const packHelp = new PackHelp()
 const ackPackHelp = new (require('./ack-package.help'))()
-const appSrcPath = path.join('app','src')
 let indexInputPath = path.join('index.pug')
 
 //config templates
 const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','ack-app','typings.d.ts')).toString()
 const tsConfig = require('./lib/ack-app/tsconfig.es5.json')
-const tsAotConfig = require('./lib/ack-app/tsconfig.es5.aot.json')
+const angularConfig = require('./lib/ack-app/angular.json')
+//const tsAotConfig = require('./lib/ack-app/tsconfig.es5.aot.json')
 
 function runPrompts(){
   const schema = [{
@@ -44,11 +48,16 @@ function getAssetSchema(){
     default:'yes',
     ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.json') )
   },{
+    description:'Create default angular.json?',
+    name:'writeAngularJson',
+    default:'yes',
+    ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'angular.json') )
+  }/*,{
     description:'Create default tsconfig.aot.json?',
     name:'writeTsAotConfig',
     default:'yes',
     ask:()=>!fs.existsSync( path.join(process.cwd(), getAppSrcPath(), 'tsconfig.aot.json') )
-  },{
+  }*/,{
     description:'Create default typings.d.ts?',
     name:'createTypings',
     default:'yes',
@@ -113,7 +122,7 @@ function getScriptsSchema(){
     })
   }
   
-  const compileAotDefined = packHelp.scriptDefined("compile:aot")
+  /*const compileAotDefined = packHelp.scriptDefined("compile:aot")
   if( !compileAotDefined ){
     schema.push({
       description:'Add compile:aot convenient script to npm package',
@@ -121,7 +130,7 @@ function getScriptsSchema(){
       default:'yes',
       ask: isPerformScripts
     })
-  }
+  }*/
   
   const buildJsDefined = packHelp.scriptDefined("build:js")
   if( !buildJsDefined ){
@@ -307,6 +316,7 @@ function processPrompts(results){
   }
 
   // compile:aot
+  /*
   if( promisePrompt.isLikeTrue(results.addCompileAot) ){
     savePack = true
     packHelp.setScript(
@@ -316,7 +326,7 @@ function processPrompts(results){
     )
 
     paramNgCompilers = true
-  }
+  }*/
 
   // build:js
   if( promisePrompt.isLikeTrue(results.addBuildJs) ){
@@ -324,16 +334,34 @@ function processPrompts(results){
     
     packHelp.setScript(
       "build:js",
-      "node --max-old-space-size=8192 ./node_modules/ack-webpack/bin/cli "+path.join(myAppSrcPath,"index.prod.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json"),
+      "npm-run-all build:js:prod build:js:dev",
       "Builds one TypeScript source file into a final www output file. Node memory has been increased to cover large app builds"
+    )
+    
+    packHelp.setScript(
+      "build:js:dev",
+      "node --max-old-space-size=8192 ./node_modules/.bin/ng build dev",
+      "Builds one angular based developement app"
+    )
+    
+    packHelp.setScript(
+      "build:js:prod",
+      "node --max-old-space-size=8192 ./node_modules/.bin/ng build prod --aot --delete-output-path=false",
+      "Builds one angular based production ready app"
     )
     
     if( !packHelp.scriptDefined("watch:js") ){
       const htmlMode = promisePrompt.isLikeTrue(results.html5Mode) ? ' --html5Mode' : ''
       packHelp.setScript(
         "watch:js",
-        "ack-webpack "+path.join(myAppSrcPath,"index.ts")+" "+results.assetIndexFilePath+" --production --project " + path.join(myAppSrcPath,"tsconfig.json") + htmlMode + " --watch --browser="+results.buildPath,
-        "Builds one TypeScript source file into a final www output file. Node memory has been increased to cover large app builds"
+        "node --max-old-space-size=8192 ./node_modules/.bin/ng serve dev --open",
+        "Watches one angular based developement app"
+      )
+
+      packHelp.setScript(
+        "watch:js:prod",
+        "node --max-old-space-size=8192 ./node_modules/.bin/ng serve prod --open --source-map",
+        "Watches one angular based production ready app"
       )
     }
     
@@ -359,7 +387,10 @@ function processPrompts(results){
     }
 
     if( !promiseSpawn.isModuleInstalled('ack-sass') ){    
-      installs.push({name:'ack-sass', details:'Installing ack-sass to handle casting .scss files to .css file'})
+      installs.push({
+        name:'ack-sass',
+        details:'Installing ack-sass to handle casting .scss files to .css file'
+      })
     }
 
     //default styles.scss file
@@ -380,9 +411,9 @@ function processPrompts(results){
       "copy:fonts",
       "build:css",
       "build:index",
-      "compile:prefx",
+      //"compile:prefx",
       "compile:templates",
-      "compile:aot",
+      //"compile:aot",
       "build:js"
     ]
 
@@ -406,7 +437,7 @@ function processPrompts(results){
 
     const watchArray = (packHelp.getScript("watch") || 'npm-run-all --parallel').split(' ')
     const watchers = [
-      "compile:aot",//ensure watched AoT files exist
+      //"compile:aot",//ensure watched AoT files exist
       "copy:fonts",//if fonts were changed before watch, they will be rendered here
       "compile:templates",//if templates were changed before watch, they will be rendered here
       "watch:css",
@@ -464,6 +495,7 @@ function processPrompts(results){
   }
 
   //build index.aot.ts
+  /*
   if(  promisePrompt.isLikeTrue(results.createIndexProdTs) ){
     promise = promise.then(()=>{
       const writeFile = path.join(getAppSrcPath(), 'index.aot.ts')
@@ -474,7 +506,7 @@ function processPrompts(results){
       return Path.paramDir()
       .then( ()=>Path.writeFile(contents) )
     })
-  }
+  }*/
 
   //build app.module.ts
   if(  promisePrompt.isLikeTrue(results.createAppModuleTs) ){
@@ -496,11 +528,11 @@ function processPrompts(results){
       .then( ()=>promiseSpawn(['npm','run','build:index'], {log:log}) )
     }
 
-    if( promisePrompt.isLikeTrue(results.runPrefx) ){
+    /*if( promisePrompt.isLikeTrue(results.runPrefx) ){
       promise = promise
       .then(()=>log('Creating ack-angular-fx prefx.ts file...'))
       .then( ()=>promiseSpawn(['npm','run','compile:prefx'], {log:log}) )
-    }
+    }*/
   /* end : after run scripts */
 
   return promise
@@ -511,12 +543,17 @@ function processTsResults(results){
   let promise = Promise.resolve()
   const appRoot = getAppSrcPath()
   const tsOptions = {
-    writeTsAotConfig : promisePrompt.isLikeTrue(results.writeTsAotConfig),
+    //writeTsAotConfig : promisePrompt.isLikeTrue(results.writeTsAotConfig),
+    writeAngularJson    : promisePrompt.isLikeTrue(results.writeAngularJson),
     writeTsConfig    : promisePrompt.isLikeTrue(results.writeTsConfig),
     createTypings    : promisePrompt.isLikeTrue(results.createTypings)
   }
 
-  if(tsOptions.writeTsConfig || tsOptions.writeTsAotConfig || tsOptions.createTypings){
+  if(tsOptions.writeTsConfig
+  || tsOptions.createTypings
+  || tsOptions.writeAngularJson
+  //|| tsOptions.writeTsAotConfig
+  ){
     promise = promise.then( ()=>ackPath(appRoot).param() )
   }
 
@@ -524,9 +561,13 @@ function processTsResults(results){
     promise = promise.then( ()=>writeTsConfig(appRoot, tsOptions) )
   }
 
-  if(tsOptions.writeTsAotConfig){
-    promise = promise.then( ()=>writeTsAotConfig(appRoot, tsOptions) )
+  if(tsOptions.writeAngularJson){
+    promise = promise.then( ()=>writeAngularJson(appRoot, tsOptions) )
   }
+
+  /*if(tsOptions.writeTsAotConfig){
+    promise = promise.then( ()=>writeTsAotConfig(appRoot, tsOptions) )
+  }*/
 
   if(tsOptions.createTypings){
     promise = promise.then( ()=>createTypings(appRoot, tsOptions) )
@@ -548,6 +589,20 @@ function writeTsConfig(appRoot, options){
   log('created',filePath)
 }
 
+function writeAngularJson(appRoot, options){
+  const filePath = path.join(packHelp.getFolderPath(),'angular.json')
+  const exists = fs.existsSync( filePath )
+  if(exists)return
+  const config = angularConfig
+  /*if(options && options.createTypings){
+    config.files = config.files || []
+    config.files.push('typings.d.ts')
+  }*/
+  fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
+  log('created',filePath)
+}
+
+/*
 function writeTsAotConfig(appRoot, options){
   const filePath = path.join(appRoot,'tsconfig.aot.json')
   const exists = fs.existsSync( filePath )
@@ -559,7 +614,7 @@ function writeTsAotConfig(appRoot, options){
   }
   fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
   log('created',filePath)
-}
+}*/
 
 function createTypings(appRoot, options){
   const filePath = path.join(appRoot,'typings.d.ts')

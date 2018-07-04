@@ -21,6 +21,10 @@ module.exports = class JsonHelp{
     return this.packJson = this.getJson()
   }
 
+  getFolderPath(){
+    return path.join(this.packJson,"../")
+  }
+
   save(){
     this.loadJson()
     const write = JSON.stringify(this.packJson, null, 2)
