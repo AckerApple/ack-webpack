@@ -70,6 +70,15 @@ function getInstallSchema(){
     })
   }
 
+  if( !promiseSpawn.isModuleInstalled('@angular/cli') ){
+    schema.push({
+      description:'Intall @angular/cli',
+      name:'@angular/cli',
+      default:'yes',
+      ask:isPerformInstalls
+    })
+  }
+
   if( !promiseSpawn.isModuleInstalled('@angular/compiler') ){
     schema.push({
       description:'Intall @angular/compiler?',
