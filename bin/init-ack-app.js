@@ -18,7 +18,6 @@ let indexInputPath = path.join('index.pug')
 const typingsConfig = fs.readFileSync(path.join(__dirname,'lib','ack-app','typings.d.ts')).toString()
 const tsConfig = require('./lib/ack-app/tsconfig.es5.json')
 const angularConfig = require('./lib/ack-app/angular.json')
-//const tsAotConfig = require('./lib/ack-app/tsconfig.es5.aot.json')
 
 function runPrompts(){
   const schema = [{
